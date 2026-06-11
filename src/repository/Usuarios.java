@@ -2,30 +2,34 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package utils;
+package repository;
 
 /**
  *
  * @author alum.l4
  */
-public class Users {
-    private static final String[] emails = new String[1000];
-    private static final String[] passwords = new String[1000];
-    private static final String[] names = new String[1000];
-    private static final int[] roles = new int[1000]; // 0 -> admin; 1 -> common
-    private static final String[] dates = new String[1000];
-    private static int length = 0;
+public class Usuarios {
+    private static final int LONGITUD_MAXIMA = 1000;
+    private static final String[] emails = new String[LONGITUD_MAXIMA];
+    private static final String[] contrasenias = new String[LONGITUD_MAXIMA];
+    private static final String[] nombres = new String[LONGITUD_MAXIMA];
+    private static final int[] roles = new int[LONGITUD_MAXIMA]; // 0 -> admin; 1 -> common
+    private static final String[] fechas = new String[LONGITUD_MAXIMA];
+    private static int cantidad = 0;
     
-    private static void loadUsers() {
-        addUser("oscar.sanchez@upeu.edu.pe", "José Sánchez", "12345678", 0, "30/10/08");
+    private static void cargarUsuarios() {
+        crearUsuario("ejemplo@correo.com", "Mateo Rodriguez", "12345678", 0, "06/07/2003");
     }
     
-    /** 
-     * @param email The user email
-     * @return The user index */
-    public static int findUser(String email) {
+    /**
+     * Busca un usuario en el sistema utilizando su email.
+     * @param email La direccion de correo electronico unica que se desea buscar.
+     * @return El indice (posicion) en el arreglo {@code emails} si se encuentra; 
+     * {@code -1} en caso de que el correo no este registrado.
+     */
+    public static int buscarUsuario(String email) {
         int index = -1;
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < cantidad; i++) {
             if (emails[i].equals(email)) {
                 index = i;
                 break;
@@ -34,14 +38,17 @@ public class Users {
         return index;
     }
     
-    /** 
-     * @param name The user name
-     * @return The users indexes */
-    public static int[] searchUsers(String name) {
-        int[] indexes = new int[length];
+    /** Realiza una busqueda de usuarios cuyos nombres contengan de forma parcial o total
+     * el String (texto) especificado.
+     * @param nombre Fragmento o nombre completo del usuario por el cual se desea realizar el filtro.
+     * @return Un array de enteros que contiene los indices de todos los usuarios que coincidieron 
+     * con la busqueda. Si no hay coincidencias, devuelve un array vacio (longitud 0).
+     */
+    public static int[] buscarUsuarios(String nombre) {
+        int[] indexes = new int[cantidad];
         int foundLength = 0;
-        for (int i = 0; i < length; i++) {
-            if (!names[i].toLowerCase().contains(name.toLowerCase())) continue;
+        for (int i = 0; i < cantidad; i++) {
+            if (!nombres[i].toLowerCase().contains(nombre.toLowerCase())) continue;
             indexes[foundLength] = i;
             foundLength++;
         }
@@ -52,84 +59,153 @@ public class Users {
         return found;
     }
     
-    /** Returns the user index */
-    public static int addUser(String email, String name, String password, int role, String date) {
-        if (findUser(email) != -1) return -1;
+    /** Inserta un nuevo usuario al final de los arreglos del repositorio. 
+     * Valida que no exceda el limite del almacenamiento y que el correo no este duplicado.
+     * @param email         Correo electronico unica del nuevo usuario.
+     * @param nombre        Nombre completo del usuario.
+     * @param contrasenia   Contrasenia de acceso a la cuenta.
+     * @param rol           Rol asignado al usuario (0 para Administrador, 1 para Usuario Comun).
+     * @param fecha         Fecha de nacimiento o de registro del usuario en formato dd/mm/yyyy.
+     * @return El indice de la posicion donde fue guardado el usuario exitosamente; 
+     * {@code -1} si el almacenamiento esta lleno o el correo ya se encuentra registrado.
+     */
+     public static int crearUsuario(String email, String nombre, String contrasenia, int rol, String fecha) {
+        if (buscarUsuario(email) != -1) return -1;
+        if (cantidad >= LONGITUD_MAXIMA) return -1;
         
-        emails[length] = email;
-        names[length] = name;
-        passwords[length] = password;
-        roles[length] = role;
-        dates[length] = date;
+        emails[cantidad] = email;
+        nombres[cantidad] = nombre;
+        contrasenias[cantidad] = contrasenia;
+        roles[cantidad] = rol;
+        fechas[cantidad] = fecha;
         
-        length++;
+        cantidad++;
         
-        return length - 1;
+        return cantidad - 1;
     }
     
-    /** Returns the user index */
-    public static int editProfile(String email, String name, String password, String date) {
-        int index = findUser(email);
+    /**
+     * Modifica la informacion del perfil del usuario (nombre, contrasenia y fecha de nacimiento) 
+     * por su correo.
+     * @param email         El correo de la cuenta que se pretende actualizar.
+     * @param nombre        El nuevo nombre completo que reemplazara al anterior.
+     * @param contrasenia   La nueva contrasenia de seguridad.
+     * @param fecha         La nueva fecha de nacimiento en formato dd/mm/yyyy.
+     * @return El indice del usuario cuyos datos fueron modificados; 
+     * {@code -1} si el usuario no existe en los registros.
+     */
+    public static int editarPerfil(String email, String nombre, String contrasenia, String fecha) {
+        int index = buscarUsuario(email);
         if (index == -1) return -1;
         
-        names[index] = name;
-        passwords[index] = password;
-        dates[index] = date;
+        nombres[index] = nombre;
+        contrasenias[index] = contrasenia;
+        fechas[index] = fecha;
         
         return index;
     }
     
-    /** Returns if the user has be deleted */
-    public static boolean deleteUser(String email) {
-        int index = findUser(email);
+    /**
+     * Elimina un usuario del sistema por su correo y contrasenia.
+     * @param email         El correo electronico del usuario que se desea dar de baja.
+     * @param contrasenia   La contrasenia para asegurar que si sea el usuario.
+     * @return {@code true} si el usuario existia y se elimino correctamente; 
+     * {@code false} en caso de que no se encontrara el correo indicado.
+     */
+    public static boolean borrarUsuario(String email, String contrasenia) {
+        int index = indiceSiAuth(email, contrasenia);
         if (index == -1) return false;
         
-        for (int i = index; i < length; i++) {
+        for (int i = index; i < cantidad; i++) {
             emails[i] = emails[i+1];
-            passwords[i] = passwords[i+1];
-            names[i] = names[i+1];
+            contrasenias[i] = contrasenias[i+1];
+            nombres[i] = nombres[i+1];
             roles[i] = roles[i+1];
-            dates[i] = dates[i+1];
+            fechas[i] = fechas[i+1];
         }
-        length--;
+        cantidad--;
 
         return true;
     }
     
-    public static int auth(String email, String password) {
-        int index = findUser(email);
+    /**
+     * Valida las credenciales de acceso de un usuario comparando su correo y contrasenia.
+     * @param email         El correo ingresado por el usuario.
+     * @param contrasenia   La contrasenia ingresada por el usuario.
+     * @return {@code true} si el usuario existia y la contrasenia coincida; 
+     * {@code false} en caso de que alguno de los dos datos sea invalido.
+     */
+    public static boolean auth(String email, String contrasenia) {
+        return indiceSiAuth(email, contrasenia) != -1;
+    }
+    
+    /**
+     * Valida las credenciales de acceso de un usuario comparando su correo y contrasenia.
+     * @param email         El correo ingresado por el usuario.
+     * @param contrasenia   La contrasenia ingresada por el usuario.
+     * @return El indice numerico del usuario si la autenticacion es correcta; 
+     * {@code -1} si el correo electronico no existe o si la contrasenia no coincide.
+     */
+    public static int indiceSiAuth(String email, String contrasenia) {
+        int index = buscarUsuario(email);
         if (index == -1) return -1;
-        if (!passwords[index].equals(password)) return -1;
+        if (!contrasenias[index].equals(contrasenia)) return -1;
         return index;
     }
     
-    public static int getLength() {
-        return length;
+    /**
+     * Obtiene la cantidad actual de usuarios almacenados.
+     * @return El numero de usuarios actualmente.
+     */
+    public static int verCantidad() {
+        return cantidad;
     }
     
-    public static void showUser(int index) {
-        if (index < 0 || index >= length) return;
+    /**
+     * Imprime en la consola la informacion publica basica de un usuario (Nombre y Fecha de Nacimiento)
+     * por su posicion en el arreglo.
+     * @param indice Posicion del usuario dentro de los arreglos.
+     */
+    public static void mostrarUsuario(int indice) {
+        if (indice < 0 || indice >= cantidad) return;
         
-        System.out.println("Full Name: " + names[index]);
-        System.out.println("Birth Date: " + dates[index]);
+        System.out.println("Nombre: " + nombres[indice]);
+        System.out.println("Fecha de Nacimiento: " + fechas[indice]);
     }
     
-    public static void showMyUser(int index) {
-        if (index < 0 || index >= length) return;
+    /**
+     * Imprime en la consola la informacion privada y completa de un usuario (Email, Nombre, Rol y Fecha)
+     * por su posicion en el arreglo. Es utilizado para las vistas de perfil propio de la cuenta.
+     * @param index Posicion del usuario dentro de los arreglos.
+     */
+    public static void mostrarMiUsuario(int index) {
+        if (index < 0 || index >= cantidad) return;
         
-        System.out.println("Email: " + emails[index]);
-        System.out.println("Full Name: " + names[index]);
-        System.out.println("Role: " + roles[index]);
-        System.out.println("Birth Date: " + dates[index]);
+        String rol = "Comun";
+        if (roles[index] == 0) rol = "Administrador";
+        
+        System.out.println("Correo: " + emails[index]);
+        System.out.println("Nombre: " + nombres[index]);
+        System.out.println("Rol: " + rol);
+        System.out.println("Fecha de Nacimiento: " + fechas[index]);
     }
 
-    public static int getRole(String email) {
-        int index = findUser(email);
-        if (index == -1) return 2; // 2 is not found
+    /**
+     * Obtiene el codigo del rol asignado a un usuario mediante su correo.
+     * @param email El correo del usuario cuyo rol se quiere consultar.
+     * @return El numero del rol ({@code 0} para Administrador, {@code 1} para Comun), 
+     * o {@code -1} si el usuario no pertenece a la base de datos.
+     */
+    public static int verRol(String email) {
+        int index = buscarUsuario(email);
+        if (index == -1) return -1;
         return roles[index];
     }
     
-    public static void init() {
-        loadUsers();
+    /**
+     * Carga los datos necesarios para el correcto funcionamiento de esta clase.
+     */
+    public static void cargar() {
+        cargarUsuarios();
     }
 }

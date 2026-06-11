@@ -8,19 +8,19 @@ import java.util.Scanner;
  *
  * @author alum.l4
  */
-public class Reader {
+public class Lector {
     private static final Scanner sc = new Scanner(System.in);
     
-    public static String readText() {
+    public static String leerTexto() {
         return sc.nextLine();
     }
-    public static int readInt() {
-        return Integer.parseInt(readText());
+    public static int leerEntero() {
+        return Integer.parseInt(leerTexto());
     }
-    public static boolean readBool() {
-        return readText().toLowerCase().startsWith("y");
+    public static boolean leerBooleano() {
+        return leerTexto().toLowerCase().startsWith("s");
     }
-    public static void close() {
+    public static void cerrar() {
         sc.close();
     }
 }

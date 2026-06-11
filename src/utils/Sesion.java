@@ -3,26 +3,45 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package utils;
+
+import repository.Usuarios;
+
 /**
  *
  * @author alum.l4
  */
-public class Login {
+public class Sesion {
+    private static String email;
+    
     public static void auth() {
         String email;
-        String password;
-        boolean hasAuth = true;
+        String contrasenia;
         do {
-            if (!hasAuth) {
-                System.out.println("Email or Password Incorrect\n");
-            }
-            System.out.println("*** LOGIN ***");
+            System.out.println("*** INICIAR SESION ***");
             System.out.print("Email: ");
-            email = Reader.readText();
-            System.out.print("Password: ");
-            password = Reader.readText();
-            hasAuth = CurrentUser.login(email, password);
-        } while (!hasAuth);
+            email = Lector.leerTexto();
+            System.out.print("Contrasenia: ");
+            contrasenia = Lector.leerTexto();
+            
+            if (Usuarios.indiceSiAuth(email, contrasenia) == -1) {
+                Errores.deAuth();
+            } else {
+                Sesion.email = email;
+                break;
+            }
+        } while (true);
+    }
+    
+    public static String verEmail() {
+        return email;
+    }
+    
+    public static int verIndice() {
+        return Usuarios.buscarUsuario(email);
+    }
+    
+    public static boolean esAdmin() {
+        return Usuarios.verRol(email) == 0;
     }
 }
 

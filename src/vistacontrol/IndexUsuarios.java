@@ -3,220 +3,216 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package vistacontrol;
-import utils.CurrentUser;
-import utils.Reader;
-import utils.Users;
+import utils.Errores;
+import utils.Lector;
+import repository.Usuarios;
+import utils.Sesion;
 /**
  *
  * @author alum.l4
  */
-public class Indexpersona {
-    public static final Reader Reader = new Reader();
+public class IndexUsuarios {
+    public static boolean debeSalir = false;
     
-    private static void list() {
-        System.out.println("*** LIST ***");
+    private static void listar() {
+        System.out.println("*** USUARIOS ***");
         
-        int length = Users.getLength();
+        int cantidad = Usuarios.verCantidad();
         
-        if (length == 0) {
-            System.out.println("Users list is empty");
-            System.out.println("Start to register users");
+        if (cantidad == 0) {
+            System.out.println("!> La lista de usuarios esta vacia");
             return;
         }
         
-        for (int i = 0; i < length; i++) {
-            Users.showUser(i);
+        for (int i = 0; i < cantidad; i++) {
+            Usuarios.mostrarUsuario(i);
+            System.out.println(" - - - - - - - - - - ");
         }
+        System.out.printf("Se mostraron %d usuario(s)\n", cantidad);
     }
     
-    private static void search() {
-        System.out.println("*** SEARCH ***");
-        System.out.print("Search by Name: ");
-        String name = Reader.readText();
+    private static void buscarUsuarios() {
+        System.out.println("*** BUSCAR USUARIOS ***");
         
-        int[] indexes = Users.searchUsers(name);
+        System.out.print("Nombre: ");
+        String nombre = Lector.leerTexto();
+        System.out.println("");
         
-        for (int i = 0; i < indexes.length; i++) {
-            Users.showUser(indexes[i]);
-            System.out.println("----------");
-        }
-    }
-    
-    private static void find() {
-        System.out.println("*** FIND ***");
-        System.out.print("Email: ");
-        String email = Reader.readText();
+        int[] indices = Usuarios.buscarUsuarios(nombre);
+        int cantidad = indices.length;
         
-        int index = Users.findUser(email);
-        
-        if (index == -1) {
-            System.out.println("User not found");
+        if (cantidad == 0) {
+            System.out.printf("!> No se encontraron usuarios con nombre \"%s\"\n", nombre);
             return;
         }
         
-        Users.showUser(index);
+        for (int i = 0; i < cantidad; i++) {
+            Usuarios.mostrarUsuario(indices[i]);
+            System.out.println(" - - - - - - - - - - ");
+        }
+        System.out.printf("Se encontraron %d usuario(s)\n", cantidad);
     }
     
-    private static void viewProfile() {
-        System.out.println("*** MY PROFILE ***");
+    private static void verPerfil() {
+        System.out.println("*** MI PERFIL ***");
         
-        int index = Users.findUser(CurrentUser.email);
+        int indice = Sesion.verIndice();
         
-        if (index == -1) {
-            System.out.println("User not found");
+        if (indice == -1) {
+            System.out.println("!> No se pudo encontrar tu usuario");
             return;
         }
         
-        Users.showMyUser(index);
+        Usuarios.mostrarMiUsuario(indice);
     }
     
-    private static void editProfile() {
-        System.out.println("*** EDIT MY PROFILE ***");
+    private static void editarPerfil() {
+        System.out.println("*** EDITAR MI PERFIL ***");
         
-        System.out.print("Password: ");
-        String password = Reader.readText();
+        String email = Sesion.verEmail();
         
-        if (Users.auth(CurrentUser.email, password) == -1) {
-            System.out.println("User or Password Incorrect!");
-            System.out.println("Try again later...");
+        System.out.print("Contrasenia: ");
+        String contrasenia = Lector.leerTexto();
+        
+        if (!Usuarios.auth(email, contrasenia)) {
+            Errores.deAuth();
             return;
         }
         
         System.out.print("Full Name: ");
-        String name = Reader.readText();
+        String nombre = Lector.leerTexto();
         System.out.print("Password: ");
-        String newPassword = Reader.readText();
+        String nuevaContra = Lector.leerTexto();
         System.out.print("Birth Date: ");
-        String date = Reader.readText();
+        String fecha = Lector.leerTexto();
         
-        Users.editProfile(CurrentUser.email, name, newPassword, date);
+        Usuarios.editarPerfil(email, nombre, nuevaContra, fecha);
     }
     
-    private static void deleteProfile() {
-        System.out.println("*** DELETE MY PROFILE ***");
+    private static void borrarPerfil() {
+        System.out.println("*** ELIMINAR MI PERFIL ***");
         
-        System.out.print("Password: ");
-        String password = Reader.readText();
+        String email = Sesion.verEmail();
         
-        if (Users.auth(CurrentUser.email, password) == -1) {
-            System.out.println("User or Password Incorrect!");
-            System.out.println("Try again later...");
-            return;
+        System.out.print("Contrasenia: ");
+        String contrasenia = Lector.leerTexto();
+        
+        System.out.print("Desea eliminar la cuenta? (S/N): ");
+        if (!Lector.leerBooleano()) return;
+        
+        if (Usuarios.borrarUsuario(email, contrasenia)) {
+            System.out.println("\nUsuario eliminado exitosamente!");
+        } else {
+            Errores.deAuth();
         }
-        
-        System.out.print("Are you sure? (Y/N): ");
-        if (!Reader.readBool()) return;
-        
-        Users.deleteUser(CurrentUser.email);
     }
     
-    private static void register() {
-        System.out.println("*** REGISTER ***");
+    private static void registrarUsuario() {
+        System.out.println("*** REGISTRAR ***");
         System.out.print("Email: ");
-        String email = Reader.readText();
-        System.out.print("Full Name: ");
-        String name = Reader.readText();
-        System.out.print("Password: ");
-        String password = Reader.readText();
-        System.out.print("Role (0 -> Admin, 1 -> Common): ");
-        int role = Reader.readInt();
-        System.out.print("Birth Date: ");
-        String date = Reader.readText();
-        
-        Users.addUser(email, name, password, role, date);
-        
-        System.out.println("Datas added successfully!");
-    }
-    
-    private static void delete() {
-        System.out.println("*** DELETE ***");
-        
-        System.out.print("User's Email to delete: ");
-        String email = Reader.readText();
-        
-        System.out.print("User password: ");
-        String password = Reader.readText();
-        
-        int index = Users.auth(email, password);
-        
-        if (index == -1) {
-            System.out.println("Email or Password is Incorrect!");
-            System.out.println("Try again later...");
-            return;
-        }
-        
-        if (Users.deleteUser(email)) {
-            System.out.println("User deleted!");
-        } else {
-            System.out.println("We cant delete this user...");
-            System.out.println("Try again later...");
-        }
-    }
-    
-    private static void exit() {
-        System.out.println("Exiting...");
-        System.out.println("Good Bye!");
-    }
-    
-    private static void error() {
-        System.out.println("\nERROR! You need put a number in range\n");
-    }
-    
-    public static int showMenu() {
-        System.out.println("*** CRUD ***");
-        System.out.println("1. List Users");
-        System.out.println("2. Search Users");
-        System.out.println("3. Find User");
-        System.out.println("4. View Profile");
-        System.out.println("5. Edit Profile");
-        int last;
-        if (!CurrentUser.isAdmin()) {
-            System.out.println("6. Delete Profile");
-            last = 7;
-        } else {
-            System.out.println("6. Register");
-            System.out.println("7. Delete User");
-            last = 8;
-        }
-        System.out.println(last + ". Exit");
-        System.out.print("Choose an option [1-"+last+"]: ");
-        return last;
-    }
-    
-    public static int menu() {
-        int option = Reader.readInt();
-        switch (option) {
-            case 1 -> list();
-            case 2 -> search();
-            case 3 -> find();
-            case 4 -> viewProfile();
-            case 5 -> editProfile();
-            default -> {
-                if (!CurrentUser.isAdmin()) {
-                    switch (option) {
-                        case 6 -> deleteProfile();
-                        case 7 -> exit();
-                        default -> error();
-                    }
-                } else {
-                    switch (option) {
-                        case 6 -> register();
-                        case 7 -> delete();
-                        case 8 -> exit();
-                        default -> error();
-                    }
-                }
-            }
-        }
-        return option;
-    }
-    
-    public static void init() {
-        int opt;
-        int exitNum = 0;
+        String email = Lector.leerTexto();
+        System.out.print("Nombre Completo: ");
+        String nombre = Lector.leerTexto();
+        System.out.print("Contrasenia: ");
+        String contrasenia = Lector.leerTexto();
+        int rol;
         do {
-            exitNum = showMenu();
-            opt = menu();
-        } while (opt != exitNum);
+            System.out.print("Rol (0=Admin, 1=Comun): ");
+            rol = Lector.leerEntero();
+            if (rol == 0 || rol == 1) {
+                break;
+            } else {
+                Errores.deRango();
+            }
+        } while (true);
+        System.out.print("Fecha de Nacimiento: ");
+        String fecha = Lector.leerTexto();
+        
+        Usuarios.crearUsuario(email, nombre, contrasenia, rol, fecha);
+        
+        System.out.println("Usuario registrado exitosamente!");
+    }
+    
+    private static void borrarUsuario() {
+        System.out.println("*** BORRAR USUARIO ***");
+        
+        System.out.print("Email: ");
+        String email = Lector.leerTexto();
+        
+        if (email.equals(Sesion.verEmail())) {
+            Errores.personalizado("No puedes eliminar tu usuario");
+            return;
+        }
+        
+        System.out.print("Contrasenia: ");
+        String contrasenia = Lector.leerTexto();
+        
+        if (Usuarios.borrarUsuario(email, contrasenia)) {
+            System.out.println("Usuario eliminado correctamente!");
+        } else {
+            Errores.deAuth();
+        }
+    }
+    
+    private static void volver() {
+        debeSalir = true;
+        System.out.println("Buena suerte!\n");
+    }
+    
+    public static void mostrarMenu() {
+        boolean esAdmin = Sesion.esAdmin();
+        
+        System.out.println("");
+        System.out.println("*** PANEL DE USUARIO ***");
+        if (esAdmin) System.out.println(" >>> :Administrador <<< ");
+        System.out.println("1. Ver Todos Los Usuarios");
+        System.out.println("2. Buscar Usuarios");
+        System.out.println("3. Ver Mi Perfil");
+        System.out.println("4. Editar Mi Perfil");
+        
+        int last;
+        if (!esAdmin) {
+            System.out.println("5. Borrar Mi Perfil");
+            last = 6;
+        } else {
+            System.out.println("5. Registrar Usuario");
+            System.out.println("6. Borrar Usuario");
+            last = 7;
+        }
+        System.out.println(last + ". Volver");
+        System.out.printf("Elige una opcion [1-%d]: ", last);
+    }
+    
+    public static void menu() {
+        int option = Lector.leerEntero();
+        System.out.println("");
+        
+        switch (option) {
+            case 1 -> listar();
+            case 2 -> buscarUsuarios();
+            case 3 -> verPerfil();
+            case 4 -> editarPerfil();
+            case 5 -> {
+                if (Sesion.esAdmin()) registrarUsuario();
+                else borrarPerfil();
+            }
+            case 6 -> {
+                if (Sesion.esAdmin()) borrarUsuario();
+                else volver();
+            }
+            case 7 -> {
+                if (Sesion.esAdmin()) volver();
+                else Errores.deRango();
+            }
+            default -> Errores.deRango();
+        }
+    }
+    
+    public static void inicio() {
+        debeSalir = false;
+        do {
+            mostrarMenu();
+            menu();
+        } while (!debeSalir);
     }
 }
