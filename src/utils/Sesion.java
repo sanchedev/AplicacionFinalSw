@@ -16,10 +16,10 @@ public class Sesion {
     private static String dni = "";
     
     public static boolean haAuthUsuario() {
-        return !email.equals("");
+        return !email.isEmpty();
     }
     public static boolean haAuthPersona() {
-        return !dni.equals("");
+        return !dni.isEmpty();
     }
     
     public static boolean authUsuario(String email, String contrasenia) {
