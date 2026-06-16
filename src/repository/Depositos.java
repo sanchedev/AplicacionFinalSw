@@ -70,10 +70,9 @@ public class Depositos {
      * @param iglesia        Iglesia al que se le depositara el monto.
      * @param diezmo         Monto del diezmo.
      * @param ofrenda        Monto de la ofrenda.
-     * @return El código del depósito guardado.
      */
-     public static int crearDeposito(String dni, int iglesia, double diezmo, double ofrenda) {
-        if (cantidad >= LONGITUD_MAXIMA) return -1;
+     public static void crearDeposito(String dni, int iglesia, double diezmo, double ofrenda) {
+        if (cantidad >= LONGITUD_MAXIMA) return;
         
         int codigo = 0;
         if (cantidad > 0) {
@@ -92,8 +91,6 @@ public class Depositos {
         ofrendas[cantidad] = ofrenda;
         
         cantidad++;
-        
-        return cantidad - 1;
     }
 
     /**
@@ -114,6 +111,7 @@ public class Depositos {
         
         System.out.println("Código Depósito: " + codigos[indice]);
         System.out.println("DNI Miembro: " + dnis[indice]);
+        System.out.println("Codigo de Iglesia: " + codigoIglesias[indice]);
         System.out.println("Fecha: " + fechas[indice]);
     }
     
@@ -130,7 +128,7 @@ public class Depositos {
         System.out.println("Código Depósito: " + codigos[indice]);
         System.out.println("Miembro: " + dnis[indice]);
         if (indicePersona == -1) {
-            System.out.println(" - Persona no existente");
+            System.out.println(" - Anonimo");
         } else {
             System.out.println("- DNI: " + Personas.verDNI(indice));
             System.out.println("- Nombre: " + Personas.verNombre(indice));

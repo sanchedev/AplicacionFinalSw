@@ -17,7 +17,7 @@ public class Iglesias {
     private static int cantidad = 0;
     
     private static void cargarIglesias() {
-        crearIglesia("El Inti", "Entrada de la Era", 300);
+        agregarIglesia("El Inti", "Entrada de la Era", 300);
     }
     
     /**
@@ -66,11 +66,9 @@ public class Iglesias {
      * @param nombre      Nombre de la iglesia.
      * @param direccion   Direccion fisica de la iglesia.
      * @param aforo       Capacidad maxima de personas permitidas.
-     * @return El indice de la posicion donde fue guardada la iglesia exitosamente; 
-     * {@code -1} si el almacenamiento esta lleno o el codigo ya se encuentra registrado.
      */
-    public static int crearIglesia(String nombre, String direccion, int aforo) {
-        if (cantidad >= LONGITUD_MAXIMA) return -1;
+    public static void agregarIglesia(String nombre, String direccion, int aforo) {
+        if (cantidad >= LONGITUD_MAXIMA) return;
         
         int codigo = 0;
         if (cantidad > 0) {
@@ -83,8 +81,6 @@ public class Iglesias {
         aforos[cantidad] = aforo;
         
         cantidad++;
-        
-        return cantidad - 1;
     }
     
     /**

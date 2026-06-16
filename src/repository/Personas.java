@@ -16,7 +16,7 @@ public class Personas {
     private static int cantidad = 0;
     
     private static void cargarPersonas() {
-        crearPersona("12345678", "Juan Perez", 1);
+        crearPersona("12345678", "Juan Perez", 0);
     }
     
     /**
@@ -78,20 +78,16 @@ public class Personas {
      * @param dni            DNI único de la persona.
      * @param nombre         Nombre completo de la persona.
      * @param codigoIglesia  Código de la iglesia a la que pertenece.
-     * @return El indice de la posicion donde fue guardada la persona exitosamente; 
-     * {@code -1} si el almacenamiento esta lleno o el DNI ya se encuentra registrado.
      */
-     public static int crearPersona(String dni, String nombre, int codigoIglesia) {
+     public static void crearPersona(String dni, String nombre, int codigoIglesia) {
         if (buscarPersona(dni) != -1) return -1;
-        if (cantidad >= LONGITUD_MAXIMA) return -1;
+        if (cantidad >= LONGITUD_MAXIMA) return;
         
         dnis[cantidad] = dni;
         nombres[cantidad] = nombre;
         codigoIglesias[cantidad] = codigoIglesia;
         
         cantidad++;
-        
-        return cantidad - 1;
     }
     
     /**
