@@ -12,29 +12,21 @@ import utils.Lector;
  *
  * @author sanchedev
  */
-public class IndexIglesias {
-    private static void listar() {
-        System.out.println("*** LISTAR IGLESIAS ***");
+public class IndexTesoreria {
+    private static void usuarios() {
+        IndexUsuarios.inicio();
     }
     
-    private static void registrar() {
-        System.out.println("*** REGISTRAR IGLESIA ***");
+    private static void feligreses() {
+        IndexPersonas.inicio();
     }
     
-    private static void ver() {
-        System.out.println("*** VER IGLESIA ***");
+    private static void iglesias() {
+        IndexIglesias.inicio();
     }
     
-    private static void buscar() {
-        System.out.println("*** BUSCAR IGLESIA ***");
-    }
-    
-    private static void editar() {
-        System.out.println("*** EDITAR IGLESIA ***");
-    }
-    
-    private static void borrar() {
-        System.out.println("*** BORRAR IGLESIA ***");
+    private static void depositos() {
+        // IndexDepositos.inicio();
     }
     
     
@@ -44,34 +36,30 @@ public class IndexIglesias {
     
     public static void mostrarMenu() {
         System.out.println("");
-        System.out.println("*** PANEL DE USUARIO ***");
-        System.out.println("1. Ver Todas Los Iglesias");
-        System.out.println("2. Registrar Iglesia");
-        System.out.println("3. Ver Iglesia");
-        System.out.println("4. Buscar Iglesias");
-        System.out.println("5. Editar Iglesia");
-        System.out.println("6. Borrar Iglesia");
-        System.out.println("7. Volver");
+        System.out.println("*** TESORERIA ***");
+        System.out.println("1. Manejar Usuarios");
+        System.out.println("2. Manejar Feligreses");
+        System.out.println("3. Manejar Iglesias");
+        System.out.println("4. Manejar Depositos");
+        System.out.println("5. Volver");
     }
     
     public static void inicio() {
         int opcion;
         do {
             mostrarMenu();
-            opcion = Lector.preguntarEntero("Elige una opcion [1-7]");
+            opcion = Lector.preguntarEntero("Elige una opcion [1-5]");
             System.out.println("");
 
             switch (opcion) {
-                case 1 -> listar();
-                case 2 -> registrar();
-                case 3 -> ver();
-                case 4 -> buscar();
-                case 5 -> editar();
-                case 6 -> borrar();
-                case 7 -> volver();
+                case 1 -> usuarios();
+                case 2 -> feligreses();
+                case 3 -> iglesias();
+                case 4 -> depositos();
+                case 5 -> volver();
                 default -> Errores.deRango();
             }
-        } while (opcion != 7);
+        } while (opcion != 5);
     }
 
 }

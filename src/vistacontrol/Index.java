@@ -17,7 +17,7 @@ import utils.Errores;
 public class Index {
     public static String modo = "Ninguno";
     
-    private static void entrarUsuario() {
+    private static void entrarTesoreria() {
         String email;
         String contrasenia;
         boolean haEntrado = Sesion.haAuthUsuario();
@@ -38,20 +38,22 @@ public class Index {
         
         if (haEntrado) {
             modo = "Usuario";
-            IndexUsuarios.inicio();
+            IndexTesoreria.inicio();
         }
         
         System.out.println("");
     }
     
-    private static void entrarPersona() {
+    private static void entrarFeligres() {
         String dni;
-        boolean haEntrado = Sesion.haAuthPersona();
+        boolean haEntrado = Sesion.haAuthPersona() || Lector.confirmar("¿Desea entrar como incognito?");
         boolean haSkipeado = false;
         
         // Si no tiene sesion abierta y no ha skipeado
         while (!haEntrado && !haSkipeado) {
             System.out.println("*** ENTRAR ***");
+            
+            
             dni = Lector.preguntar("DNI");
             
             haEntrado = Sesion.authPersona(dni);
@@ -64,7 +66,7 @@ public class Index {
         if (haEntrado) {
             modo = "Persona";
             System.out.println("Estamos Trabajando en esto");
-            // IndexPersonas.inicio();
+            IndexFeligres.inicio();
         }
         
         System.out.println("");
@@ -77,7 +79,7 @@ public class Index {
     public static void mostrarMenu() {
         System.out.println("*** BIENVENIDO ***");
         System.out.println("1. Entrar como Tesorero(a)");
-        System.out.println("2. Entrar como Feligres(a)");
+        System.out.println("2. Entrar como Feligres");
         System.out.println("3. Salir");
     }
     
@@ -96,8 +98,8 @@ public class Index {
             modo = "Ninguno";
             
             switch (opcion) {
-                case 1 -> entrarUsuario();
-                case 2 -> entrarPersona();
+                case 1 -> entrarTesoreria();
+                case 2 -> entrarFeligres();
                 case 3 -> salir();
                 default -> Errores.deRango();
             }
