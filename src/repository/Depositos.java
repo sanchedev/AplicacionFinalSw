@@ -4,6 +4,9 @@
  */
 package repository;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  *
  * @author sanchedev
@@ -19,7 +22,7 @@ public class Depositos {
     private static int cantidad = 0;
     
     private static void cargarDepositos() {
-        crearDeposito("12345678", "16/06/2026", 50, 10);
+        crearDeposito("12345678", 50, 10);
     }
     
     /**
@@ -69,7 +72,7 @@ public class Depositos {
      * @param ofrenda        Monto de la ofrenda.
      * @return El código del depósito guardado.
      */
-     public static int crearDeposito(String dni, String fecha, double diezmo, double ofrenda) {
+     public static int crearDeposito(String dni, double diezmo, double ofrenda) {
         if (cantidad >= LONGITUD_MAXIMA) return -1;
         
         int codigo = 0;
@@ -80,7 +83,7 @@ public class Depositos {
         codigos[cantidad] = codigo;
         dnis[cantidad] = dni;
         codigoIglesias[cantidad] = Personas.buscarIglesia(dni);
-        fechas[cantidad] = fecha;
+        fechas[cantidad] = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         diesmos[cantidad] = diezmo;
         ofrendas[cantidad] = ofrenda;
         
