@@ -12,12 +12,11 @@ public class Personas {
     private static final int LONGITUD_MAXIMA = 1000;
     private static final String[] dnis = new String[LONGITUD_MAXIMA];
     private static final String[] nombres = new String[LONGITUD_MAXIMA];
-    private static final String[] codigoIglesias = new String[LONGITUD_MAXIMA];
+    private static final int[] codigoIglesias = new int[LONGITUD_MAXIMA];
     private static int cantidad = 0;
     
     private static void cargarPersonas() {
-        // Ejemplo de inserción inicial (DNI, Nombre completo, Código de Iglesia)
-        crearPersona("74589632", "Juan Pérez", "1"); // Se usa "1" asumiendo códigos numéricos en String
+        crearPersona("74589632", "Juan Pérez", 1);
     }
     
     /**
@@ -47,7 +46,7 @@ public class Personas {
         if (index == -1) return -1;
         
         // Convierte el String del código de la iglesia a int para cumplir con la firma del método
-        return Integer.parseInt(codigoIglesias[index]);
+        return codigoIglesias[index];
     }
     
     /** Realiza una busqueda de personas cuyos nombres contengan de forma parcial o total
@@ -78,11 +77,11 @@ public class Personas {
      * Valida que no exceda el limite del almacenamiento y que el DNI no este duplicado.
      * @param dni            DNI único de la persona.
      * @param nombre         Nombre completo de la persona.
-     * @param codigoIglesia  Código de la iglesia a la que pertenece (en formato String).
+     * @param codigoIglesia  Código de la iglesia a la que pertenece.
      * @return El indice de la posicion donde fue guardada la persona exitosamente; 
      * {@code -1} si el almacenamiento esta lleno o el DNI ya se encuentra registrado.
      */
-     public static int crearPersona(String dni, String nombre, String codigoIglesia) {
+     public static int crearPersona(String dni, String nombre, int codigoIglesia) {
         if (buscarPersona(dni) != -1) return -1;
         if (cantidad >= LONGITUD_MAXIMA) return -1;
         
@@ -103,7 +102,7 @@ public class Personas {
      * @return El indice de la persona cuyos datos fueron modificados; 
      * {@code -1} si la persona no existe en los registros.
      */
-    public static int editarPersona(String dni, String nombre, String codigoIglesia) {
+    public static int editarPersona(String dni, String nombre, int codigoIglesia) {
         int index = buscarPersona(dni);
         if (index == -1) return -1;
         
@@ -131,6 +130,7 @@ public class Personas {
         
         System.out.println("Nombre: " + nombres[indice]);
         System.out.println("DNI: " + dnis[indice]);
+        System.out.println("Código de Iglesia: " + codigoIglesias[indice]);
     }
     
     /**
@@ -140,9 +140,16 @@ public class Personas {
     public static void mostrarDetallePersona(int indice) {
         if (indice < 0 || indice >= cantidad) return;
         
+        int indiceIglesia = Iglesias.buscarIglesia(codigoIglesias[indice]);
+        
         System.out.println("DNI: " + dnis[indice]);
         System.out.println("Nombre: " + nombres[indice]);
-        System.out.println("Código Iglesia: " + codigoIglesias[indice]);
+        System.out.println("Iglesia: ");
+        if (indiceIglesia == -1) {
+            System.out.println(" - Iglesia no existente");
+        }
+        System.out.println("- Codigo: " + Iglesias.verCodigo(indice));
+        System.out.println("- Nombre: " + Iglesias.verNombre(indice));
     }
 
     /**

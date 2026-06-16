@@ -69,7 +69,7 @@ public class Iglesias {
      * @return El indice de la posicion donde fue guardada la iglesia exitosamente; 
      * {@code -1} si el almacenamiento esta lleno o el codigo ya se encuentra registrado.
      */
-     public static int crearIglesia(String nombre, String direccion, int aforo) {
+    public static int crearIglesia(String nombre, String direccion, int aforo) {
         if (cantidad >= LONGITUD_MAXIMA) return -1;
         
         int codigo = 0;
@@ -129,6 +129,25 @@ public class Iglesias {
         return true;
     }
     
+    /**
+     * Obtiene el codigo de la iglesia en un indice dado.
+     * @param indice El indice de la iglesia.
+     * @return El codigo.
+     */
+    public static int verCodigo(int indice) {
+        return codigos[indice];
+    }
+        
+    
+    /**
+     * Obtiene el nombre de la iglesia en un indice dado.
+     * @param indice El indice de la iglesia.
+     * @return El nombre.
+     */
+    public static String verNombre(int indice) {
+        return nombres[indice];
+    }
+        
     /**
      * Obtiene la cantidad actual de iglesias almacenadas.
      * @return El numero de iglesias actualmente.
