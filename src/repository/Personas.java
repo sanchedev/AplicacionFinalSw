@@ -16,7 +16,7 @@ public class Personas {
     private static int cantidad = 0;
     
     private static void cargarPersonas() {
-        crearPersona("74589632", "Juan Pérez", 1);
+        crearPersona("12345678", "Juan Perez", 1);
     }
     
     /**
@@ -111,6 +111,24 @@ public class Personas {
         
         return index;
     }
+        
+    /**
+     * Obtiene el dni de la persona en un indice dado.
+     * @param indice El indice de la persona.
+     * @return El dni.
+     */
+    public static String verDNI(int indice) {
+        return dnis[indice];
+    }
+    
+    /**
+     * Obtiene el nombre de la persona en un indice dado.
+     * @param indice El indice de la persona.
+     * @return El nombre.
+     */
+    public static String verNombre(int indice) {
+        return nombres[indice];
+    }
     
     /**
      * Obtiene la cantidad actual de personas almacenadas.
@@ -147,9 +165,10 @@ public class Personas {
         System.out.println("Iglesia: ");
         if (indiceIglesia == -1) {
             System.out.println(" - Iglesia no existente");
+        } else {
+            System.out.println("- Codigo: " + Iglesias.verCodigo(indice));
+            System.out.println("- Nombre: " + Iglesias.verNombre(indice));
         }
-        System.out.println("- Codigo: " + Iglesias.verCodigo(indice));
-        System.out.println("- Nombre: " + Iglesias.verNombre(indice));
     }
 
     /**

@@ -137,7 +137,6 @@ public class Iglesias {
     public static int verCodigo(int indice) {
         return codigos[indice];
     }
-        
     
     /**
      * Obtiene el nombre de la iglesia en un indice dado.
@@ -146,6 +145,15 @@ public class Iglesias {
      */
     public static String verNombre(int indice) {
         return nombres[indice];
+    }
+    
+    /**
+     * Obtiene la direccion de la iglesia en un indice dado.
+     * @param indice El indice de la iglesia.
+     * @return La direccion.
+     */
+    public static String verDireccion(int indice) {
+        return direcciones[indice];
     }
         
     /**
