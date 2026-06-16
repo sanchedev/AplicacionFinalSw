@@ -14,7 +14,7 @@ public class Index {
     public static void inicio() {
         Usuarios.cargar();
         
-        while (!Sesion.auth()) {}
+        while (!Sesion.authUsuario()) {}
         
         IndexUsuarios.inicio();
         

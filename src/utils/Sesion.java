@@ -4,6 +4,7 @@
  */
 package utils;
 
+import repository.Personas;
 import repository.Usuarios;
 
 /**
@@ -12,8 +13,9 @@ import repository.Usuarios;
  */
 public class Sesion {
     private static String email;
+    private static String dni;
     
-    public static boolean auth() {
+    public static boolean authUsuario() {
         if (email != null) return true;
         
         String email;
@@ -27,7 +29,23 @@ public class Sesion {
             Sesion.email = email;
             return true;
         } else {
-            Errores.deAuth();
+            Errores.deAuthUsuario();
+            return false;
+        }
+    }
+    public static boolean authPersona() {
+        if (dni != null) return true;
+        
+        String dni;
+        
+        System.out.println("*** INGRESANDO COMO PERSONA ***");
+        dni = Lector.preguntar("DNI");
+
+        if (Personas.buscarPersona(dni) != -1) {
+            Sesion.dni = dni;
+            return true;
+        } else {
+            Errores.deAuthPersona();
             return false;
         }
     }

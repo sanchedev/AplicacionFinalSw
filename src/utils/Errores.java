@@ -13,8 +13,11 @@ public class Errores {
         System.out.println("\nERROR: "+msg);
     }
     
-    public static void deAuth() {
+    public static void deAuthUsuario() {
         personalizado("Email o Contrasenia incorrectos");
+    }
+    public static void deAuthPersona() {
+        personalizado("DNI no registrado");
     }
     public static void deRango() {
         personalizado("El numero esta fuera de rango");

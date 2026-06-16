@@ -64,7 +64,7 @@ public class IndexUsuarios {
         String contrasenia = Lector.preguntar("Contrasenia");
         
         if (!Usuarios.auth(email, contrasenia)) {
-            Errores.deAuth();
+            Errores.deAuthUsuario();
             return;
         }
         
@@ -103,7 +103,7 @@ public class IndexUsuarios {
         if (Usuarios.borrarUsuario(email, contrasenia)) {
             System.out.println("Usuario eliminado correctamente!");
         } else {
-            Errores.deAuth();
+            Errores.deAuthUsuario();
         }
     }
     
