@@ -4,6 +4,8 @@
  */
 package repository;
 
+import utils.Sesion;
+
 /**
  *
  * @author alum.l4
@@ -13,12 +15,11 @@ public class Usuarios {
     private static final String[] emails = new String[LONGITUD_MAXIMA];
     private static final String[] contrasenias = new String[LONGITUD_MAXIMA];
     private static final String[] nombres = new String[LONGITUD_MAXIMA];
-    private static final int[] roles = new int[LONGITUD_MAXIMA]; // 0 -> admin; 1 -> common
     private static final String[] fechas = new String[LONGITUD_MAXIMA];
     private static int cantidad = 0;
     
     private static void cargarUsuarios() {
-        crearUsuario("ejemplo@correo.com", "Mateo Rodriguez", "12345678", 0, "06/07/2003");
+        crearUsuario("ejemplo@correo.com", "Mateo Rodriguez", "12345678", "06/07/2003");
     }
     
     /**
@@ -64,19 +65,17 @@ public class Usuarios {
      * @param email         Correo electronico unica del nuevo usuario.
      * @param nombre        Nombre completo del usuario.
      * @param contrasenia   Contrasenia de acceso a la cuenta.
-     * @param rol           Rol asignado al usuario (0 para Administrador, 1 para Usuario Comun).
      * @param fecha         Fecha de nacimiento o de registro del usuario en formato dd/mm/yyyy.
      * @return El indice de la posicion donde fue guardado el usuario exitosamente; 
      * {@code -1} si el almacenamiento esta lleno o el correo ya se encuentra registrado.
      */
-     public static int crearUsuario(String email, String nombre, String contrasenia, int rol, String fecha) {
+     public static int crearUsuario(String email, String nombre, String contrasenia, String fecha) {
         if (buscarUsuario(email) != -1) return -1;
         if (cantidad >= LONGITUD_MAXIMA) return -1;
         
         emails[cantidad] = email;
         nombres[cantidad] = nombre;
         contrasenias[cantidad] = contrasenia;
-        roles[cantidad] = rol;
         fechas[cantidad] = fecha;
         
         cantidad++;
@@ -120,7 +119,6 @@ public class Usuarios {
             emails[i] = emails[i+1];
             contrasenias[i] = contrasenias[i+1];
             nombres[i] = nombres[i+1];
-            roles[i] = roles[i+1];
             fechas[i] = fechas[i+1];
         }
         cantidad--;
@@ -174,34 +172,18 @@ public class Usuarios {
     }
     
     /**
-     * Imprime en la consola la informacion privada y completa de un usuario (Email, Nombre, Rol y Fecha)
+     * Imprime en la consola la informacion privada y completa de un usuario (Email, Nombre y Fecha)
      * por su posicion en el arreglo. Es utilizado para las vistas de perfil propio de la cuenta.
-     * @param index Posicion del usuario dentro de los arreglos.
      */
-    public static void mostrarMiUsuario(int index) {
-        if (index < 0 || index >= cantidad) return;
+    public static void mostrarMiUsuario() {
+        int indice = Sesion.verIndice();
+        if (indice < 0 || indice >= cantidad) return;
         
-        String rol = "Comun";
-        if (roles[index] == 0) rol = "Administrador";
-        
-        System.out.println("Correo: " + emails[index]);
-        System.out.println("Nombre: " + nombres[index]);
-        System.out.println("Rol: " + rol);
-        System.out.println("Fecha de Nacimiento: " + fechas[index]);
+        System.out.println("Correo: " + emails[indice]);
+        System.out.println("Nombre: " + nombres[indice]);
+        System.out.println("Fecha de Nacimiento: " + fechas[indice]);
     }
 
-    /**
-     * Obtiene el codigo del rol asignado a un usuario mediante su correo.
-     * @param email El correo del usuario cuyo rol se quiere consultar.
-     * @return El numero del rol ({@code 0} para Administrador, {@code 1} para Comun), 
-     * o {@code -1} si el usuario no pertenece a la base de datos.
-     */
-    public static int verRol(String email) {
-        int index = buscarUsuario(email);
-        if (index == -1) return -1;
-        return roles[index];
-    }
-    
     /**
      * Carga los datos necesarios para el correcto funcionamiento de esta clase.
      */

@@ -13,23 +13,23 @@ import repository.Usuarios;
 public class Sesion {
     private static String email;
     
-    public static void auth() {
+    public static boolean auth() {
+        if (email != null) return true;
+        
         String email;
         String contrasenia;
-        do {
-            System.out.println("*** INICIAR SESION ***");
-            System.out.print("Email: ");
-            email = Lector.leerTexto();
-            System.out.print("Contrasenia: ");
-            contrasenia = Lector.leerTexto();
-            
-            if (Usuarios.indiceSiAuth(email, contrasenia) == -1) {
-                Errores.deAuth();
-            } else {
-                Sesion.email = email;
-                break;
-            }
-        } while (true);
+        
+        System.out.println("*** INICIAR SESION ***");
+        email = Lector.preguntar("Email");
+        contrasenia = Lector.preguntar("Contrasenia");
+
+        if (Usuarios.auth(email, contrasenia)) {
+            Sesion.email = email;
+            return true;
+        } else {
+            Errores.deAuth();
+            return false;
+        }
     }
     
     public static String verEmail() {
@@ -37,11 +37,8 @@ public class Sesion {
     }
     
     public static int verIndice() {
+        if (email == null) return -1;
         return Usuarios.buscarUsuario(email);
-    }
-    
-    public static boolean esAdmin() {
-        return Usuarios.verRol(email) == 0;
     }
 }
 

@@ -12,9 +12,12 @@ import repository.Usuarios;
  */
 public class Index {
     public static void inicio() {
-        Usuarios.cargar(); // Cargamos usuarios existentes
-        Sesion.auth(); // Pedimos que inicie sesion
+        Usuarios.cargar();
+        
+        while (!Sesion.auth()) {}
+        
         IndexUsuarios.inicio();
+        
         Lector.cerrar();
     }
     
