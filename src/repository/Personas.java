@@ -114,33 +114,6 @@ public class Personas {
     }
     
     /**
-     * Elimina una persona del sistema por su DNI.
-     * @param dni El DNI de la persona que se desea dar de baja.
-     * @return {@code true} si la persona existia y se elimino correctamente; 
-     * {@code false} en caso de que no se encontrara el DNI indicado.
-     */
-    public static boolean borrarPersona(String dni) {
-        int index = buscarPersona(dni);
-        if (index == -1) return false;
-        
-        // Desplazar los elementos restantes para cubrir el vacio
-        for (int i = index; i < cantidad - 1; i++) {
-            dnis[i] = dnis[i+1];
-            nombres[i] = nombres[i+1];
-            codigoIglesias[i] = codigoIglesias[i+1];
-        }
-        
-        // Limpiar la ultima posicion que ahora queda libre
-        dnis[cantidad - 1] = null;
-        nombres[cantidad - 1] = null;
-        codigoIglesias[cantidad - 1] = null;
-        
-        cantidad--;
-
-        return true;
-    }
-    
-    /**
      * Obtiene la cantidad actual de personas almacenadas.
      * @return El numero de personas actualmente.
      */
