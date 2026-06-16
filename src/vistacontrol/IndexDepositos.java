@@ -43,6 +43,9 @@ public class IndexDepositos {
             System.out.println("!> El deposito con codigo `"+codigo+"` no existe");
         } else {
             Iglesias.mostrarDetalleIglesia(indice);
+            if (Lector.confirmar("¿Desea imprimir este recibo?")) {
+                Depositos.imprimirDeposito(indice);
+            }
         }
     }
     

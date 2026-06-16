@@ -80,7 +80,7 @@ public class Personas {
      * @param codigoIglesia  Código de la iglesia a la que pertenece.
      */
      public static void crearPersona(String dni, String nombre, int codigoIglesia) {
-        if (buscarPersona(dni) != -1) return -1;
+        if (buscarPersona(dni) != -1) return;
         if (cantidad >= LONGITUD_MAXIMA) return;
         
         dnis[cantidad] = dni;

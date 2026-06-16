@@ -6,6 +6,7 @@ package repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import utils.Recibo;
 
 /**
  *
@@ -17,7 +18,7 @@ public class Depositos {
     private static final String[] dnis = new String[LONGITUD_MAXIMA];
     private static final int[] codigoIglesias = new int[LONGITUD_MAXIMA];
     private static final String[] fechas = new String[LONGITUD_MAXIMA];
-    private static final double[] diesmos = new double[LONGITUD_MAXIMA];
+    private static final double[] diezmos = new double[LONGITUD_MAXIMA];
     private static final double[] ofrendas = new double[LONGITUD_MAXIMA];
     private static int cantidad = 0;
     
@@ -70,9 +71,10 @@ public class Depositos {
      * @param iglesia        Iglesia al que se le depositara el monto.
      * @param diezmo         Monto del diezmo.
      * @param ofrenda        Monto de la ofrenda.
+     * @return (-1) si no pudo crear el deposito e (indice del deposito) si pudo crearlo.
      */
-     public static void crearDeposito(String dni, int iglesia, double diezmo, double ofrenda) {
-        if (cantidad >= LONGITUD_MAXIMA) return;
+    public static int crearDeposito(String dni, int iglesia, double diezmo, double ofrenda) {
+        if (cantidad >= LONGITUD_MAXIMA) return -1;
         
         int codigo = 0;
         if (cantidad > 0) {
@@ -87,12 +89,73 @@ public class Depositos {
         dnis[cantidad] = dni;
         codigoIglesias[cantidad] = iglesia;
         fechas[cantidad] = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        diesmos[cantidad] = diezmo;
+        diezmos[cantidad] = diezmo;
         ofrendas[cantidad] = ofrenda;
         
         cantidad++;
+        
+        return cantidad - 1;
     }
 
+    public static void imprimirDeposito(int indice) {
+        Recibo recibo = new Recibo(indice);
+        recibo.abrir();
+    }
+     
+    /**
+     * Obtiene el codigo de un depósito en un índice dado.
+     * @param indice El indice del depósito
+     * @return El código del deposito.
+     */
+    public static int verCodigo(int indice) {
+        return codigos[indice];
+    }
+
+    /**
+     * Obtiene el dni del que hizo un depósito en un índice dado.
+     * @param indice El indice del depósito
+     * @return El dni del hacedor del deposito.
+     */
+    public static String verDNI(int indice) {
+        return dnis[indice];
+    }
+
+    /**
+     * Obtiene el codigo de iglesia de un depósito en un índice dado.
+     * @param indice El indice del depósito
+     * @return El codigo de iglesia del deposito.
+     */
+    public static int verCodigoIglesia(int indice) {
+        return codigoIglesias[indice];
+    }
+    
+    /**
+     * Obtiene la fecha de un depósito en un índice dado.
+     * @param indice El indice del depósito
+     * @return La fecha del deposito.
+     */
+    public static String verFecha(int indice) {
+        return fechas[indice];
+    }
+
+    /**
+     * Obtiene el diezmo de un depósito en un índice dado.
+     * @param indice El indice del depósito
+     * @return El diezmo del deposito.
+     */
+    public static double verDiezmo(int indice) {
+        return diezmos[indice];
+    }
+
+    /**
+     * Obtiene la ofrenda de un depósito en un índice dado.
+     * @param indice El indice del depósito
+     * @return La ofrenda del deposito.
+     */
+    public static double verOfrenda(int indice) {
+        return ofrendas[indice];
+    }
+    
     /**
      * Obtiene la cantidad actual de depósitos almacenados.
      * @return El número de depósitos actualmente.
@@ -142,7 +205,7 @@ public class Depositos {
             System.out.println("- Direccion: " + Iglesias.verDireccion(indice));
         }
         System.out.println("Fecha: " + fechas[indice]);
-        System.out.println("Monto Diezmo: S/. " + diesmos[indice]);
+        System.out.println("Monto Diezmo: S/. " + diezmos[indice]);
         System.out.println("Monto Ofrenda: S/. " + ofrendas[indice]);
     }
 

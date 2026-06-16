@@ -59,7 +59,7 @@ public class IndexFeligres {
         
         int codigoIglesia;
         do {
-            if (Sesion.haAuthUsuario()) {
+            if (Sesion.haAuthPersona()) {
                 codigoIglesia = Lector.preguntarEntero("Codigo de Iglesia", Personas.buscarIglesia(dni));
             } else {
                 codigoIglesia = Lector.preguntarEntero("Codigo de Iglesia");
@@ -69,7 +69,10 @@ public class IndexFeligres {
         double diezmo = Lector.preguntarDecimal("Diezmo");
         double ofrenda = Lector.preguntarDecimal("Ofrenda");
         
-        Depositos.crearDeposito(dni, codigoIglesia, diezmo, ofrenda);
+        int indiceDeposito = Depositos.crearDeposito(dni, codigoIglesia, diezmo, ofrenda);
+        if (Lector.confirmar("¿Desea imprimir su recibo?")) {
+            Depositos.imprimirDeposito(indiceDeposito);
+        }
     }
     
     private static void volver() {
