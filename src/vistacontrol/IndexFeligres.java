@@ -1,5 +1,6 @@
 package vistacontrol;
 
+import java.time.LocalDate;
 import repository.Depositos;
 import repository.Iglesias;
 import repository.Personas;
@@ -51,6 +52,42 @@ public class IndexFeligres {
             System.out.println(" - - - - - - - - - - ");
         }
         System.out.printf("Se mostraron %d deposito(s)\n", resultados.length);
+        
+        if (Lector.confirmar("¿Desea ver las estadisticas de gastos?")) {
+            LocalDate ahora = LocalDate.now();
+            
+            double diezmosTotalesAnio = 0;
+            double ofrendasTotalesAnio = 0;
+            double diezmosTotalesMes = 0;
+            double ofrendasTotalesMes = 0;
+            
+            for (int i = 0; i < resultados.length; i++) {
+                String fecha = Depositos.verFecha(resultados[i]);
+                if (!fecha.endsWith(Integer.toString(ahora.getYear()))) {
+                    continue;
+                }
+                double diezmo = Depositos.verDiezmo(resultados[i]);
+                double ofrenda = Depositos.verOfrenda(resultados[i]);
+                diezmosTotalesAnio += diezmo;
+                ofrendasTotalesAnio += ofrenda;
+                if (!fecha.endsWith((ahora.getMonthValue()) + "-" + ahora.getYear())) {
+                    continue;
+                }
+                diezmosTotalesMes += diezmo;
+                ofrendasTotalesMes += ofrenda;
+            }
+            
+            System.out.println("**> ESTADISTICAS DE GASTOS");
+            System.out.println("> EN EL MES:");
+            System.out.println("\tDiezmos: " + diezmosTotalesMes);
+            System.out.println("\tOfrendas: " + ofrendasTotalesMes);
+            System.out.println("\tTotal: " + (diezmosTotalesMes+ofrendasTotalesMes));
+            System.out.println("");
+            System.out.println("> EN EL ANIO:");
+            System.out.println("\tDiezmos: " + diezmosTotalesAnio);
+            System.out.println("\tOfrendas: " + ofrendasTotalesAnio);
+            System.out.println("\tTotal: " + (diezmosTotalesAnio+ofrendasTotalesAnio));
+        }
     }
     
     private static void depositar() {
