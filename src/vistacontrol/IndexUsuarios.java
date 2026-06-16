@@ -70,9 +70,8 @@ public class IndexUsuarios {
         
         String nombre = Lector.preguntar("Nombre Completo");
         String nuevaContra = Lector.preguntar("Contrasenia");
-        String fecha = Lector.preguntar("Fecha de Nacimiento");
         
-        Usuarios.editarPerfil(email, nombre, nuevaContra, fecha);
+        Usuarios.editarPerfil(email, nombre, nuevaContra);
     }
     
     private static void registrarUsuario() {
@@ -81,9 +80,8 @@ public class IndexUsuarios {
         String email = Lector.preguntar("Email");
         String nombre = Lector.preguntar("Nombre Completo");
         String contrasenia = Lector.preguntar("Contrasenia");
-        String fecha = Lector.preguntar("Fecha de Nacimiento");
         
-        Usuarios.crearUsuario(email, nombre, contrasenia, fecha);
+        Usuarios.crearUsuario(email, nombre, contrasenia);
         
         System.out.println("Usuario registrado exitosamente!");
     }

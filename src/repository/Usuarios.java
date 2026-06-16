@@ -15,11 +15,10 @@ public class Usuarios {
     private static final String[] emails = new String[LONGITUD_MAXIMA];
     private static final String[] contrasenias = new String[LONGITUD_MAXIMA];
     private static final String[] nombres = new String[LONGITUD_MAXIMA];
-    private static final String[] fechas = new String[LONGITUD_MAXIMA];
     private static int cantidad = 0;
     
     private static void cargarUsuarios() {
-        crearUsuario("ejemplo@correo.com", "Mateo Rodriguez", "12345678", "06/07/2003");
+        crearUsuario("ejemplo@correo.com", "Mateo Rodriguez", "12345678");
     }
     
     /**
@@ -65,18 +64,16 @@ public class Usuarios {
      * @param email         Correo electronico unica del nuevo usuario.
      * @param nombre        Nombre completo del usuario.
      * @param contrasenia   Contrasenia de acceso a la cuenta.
-     * @param fecha         Fecha de nacimiento o de registro del usuario en formato dd/mm/yyyy.
      * @return El indice de la posicion donde fue guardado el usuario exitosamente; 
      * {@code -1} si el almacenamiento esta lleno o el correo ya se encuentra registrado.
      */
-     public static int crearUsuario(String email, String nombre, String contrasenia, String fecha) {
+     public static int crearUsuario(String email, String nombre, String contrasenia) {
         if (buscarUsuario(email) != -1) return -1;
         if (cantidad >= LONGITUD_MAXIMA) return -1;
         
         emails[cantidad] = email;
         nombres[cantidad] = nombre;
         contrasenias[cantidad] = contrasenia;
-        fechas[cantidad] = fecha;
         
         cantidad++;
         
@@ -89,17 +86,15 @@ public class Usuarios {
      * @param email         El correo de la cuenta que se pretende actualizar.
      * @param nombre        El nuevo nombre completo que reemplazara al anterior.
      * @param contrasenia   La nueva contrasenia de seguridad.
-     * @param fecha         La nueva fecha de nacimiento en formato dd/mm/yyyy.
      * @return El indice del usuario cuyos datos fueron modificados; 
      * {@code -1} si el usuario no existe en los registros.
      */
-    public static int editarPerfil(String email, String nombre, String contrasenia, String fecha) {
+    public static int editarPerfil(String email, String nombre, String contrasenia) {
         int index = buscarUsuario(email);
         if (index == -1) return -1;
         
         nombres[index] = nombre;
         contrasenias[index] = contrasenia;
-        fechas[index] = fecha;
         
         return index;
     }
@@ -119,7 +114,6 @@ public class Usuarios {
             emails[i] = emails[i+1];
             contrasenias[i] = contrasenias[i+1];
             nombres[i] = nombres[i+1];
-            fechas[i] = fechas[i+1];
         }
         cantidad--;
 
@@ -168,7 +162,6 @@ public class Usuarios {
         if (indice < 0 || indice >= cantidad) return;
         
         System.out.println("Nombre: " + nombres[indice]);
-        System.out.println("Fecha de Nacimiento: " + fechas[indice]);
     }
     
     /**
@@ -181,7 +174,6 @@ public class Usuarios {
         
         System.out.println("Correo: " + emails[indice]);
         System.out.println("Nombre: " + nombres[indice]);
-        System.out.println("Fecha de Nacimiento: " + fechas[indice]);
     }
 
     /**
