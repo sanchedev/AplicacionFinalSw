@@ -29,14 +29,14 @@ public class Usuarios {
      * {@code -1} en caso de que el correo no este registrado.
      */
     public static int buscarUsuario(String email) {
-        int index = -1;
+        int indice = -1;
         for (int i = 0; i < cantidad; i++) {
             if (emails[i].equals(email)) {
-                index = i;
+                indice = i;
                 break;
             }
         }
-        return index;
+        return indice;
     }
     
     /** Realiza una busqueda de usuarios cuyos nombres contengan de forma parcial o total
@@ -46,18 +46,18 @@ public class Usuarios {
      * con la busqueda. Si no hay coincidencias, devuelve un array vacio (longitud 0).
      */
     public static int[] buscarUsuarios(String nombre) {
-        int[] indexes = new int[cantidad];
-        int foundLength = 0;
+        int[] indices = new int[cantidad];
+        int cantidadDeEncontrados = 0;
         for (int i = 0; i < cantidad; i++) {
             if (!nombres[i].toLowerCase().contains(nombre.toLowerCase())) continue;
-            indexes[foundLength] = i;
-            foundLength++;
+            indices[cantidadDeEncontrados] = i;
+            cantidadDeEncontrados++;
         }
-        int[] found = new int[foundLength];
-        for (int i = 0; i < foundLength; i++) {
-            found[i] = indexes[i];
+        int[] encontrados = new int[cantidadDeEncontrados];
+        for (int i = 0; i < cantidadDeEncontrados; i++) {
+            encontrados[i] = indices[i];
         }
-        return found;
+        return encontrados;
     }
     
     /** Inserta un nuevo usuario al final de los arreglos del repositorio. 

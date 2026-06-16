@@ -68,4 +68,4 @@ Rol:         Administrador
 - José Sánchez (**sanchedev**)
 - Mathias Saavedra
 - Jaasiel Muñoz
-- Bryan ...
+- Bryan Plasencia
