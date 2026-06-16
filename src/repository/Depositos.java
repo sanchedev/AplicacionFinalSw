@@ -22,7 +22,7 @@ public class Depositos {
     private static int cantidad = 0;
     
     private static void cargarDepositos() {
-        crearDeposito("12345678", 50, 10);
+        crearDeposito("12345678", 0, 50, 10);
     }
     
     /**
@@ -66,13 +66,13 @@ public class Depositos {
     
     /** Inserta un nuevo depósito al final de los arreglos del repositorio. 
      * Valida que no exceda el límite del almacenamiento y que el código no esté duplicado.
-     * @param dni            DNI del miembro que realiza el depósito.
-     * @param fecha          Fecha del depósito en formato dd/mm/yyyy.
+     * @param dni            DNI del miembro que realiza el depósito o vacio si es anonimo.
+     * @param iglesia        Iglesia al que se le depositara el monto.
      * @param diezmo         Monto del diezmo.
      * @param ofrenda        Monto de la ofrenda.
      * @return El código del depósito guardado.
      */
-     public static int crearDeposito(String dni, double diezmo, double ofrenda) {
+     public static int crearDeposito(String dni, int iglesia, double diezmo, double ofrenda) {
         if (cantidad >= LONGITUD_MAXIMA) return -1;
         
         int codigo = 0;
@@ -80,9 +80,13 @@ public class Depositos {
             codigo = codigos[cantidad-1] + 1;
         }
         
+        if (dni.isEmpty()) {
+            dni = "*anonimo";
+        }
+        
         codigos[cantidad] = codigo;
         dnis[cantidad] = dni;
-        codigoIglesias[cantidad] = Personas.buscarIglesia(dni);
+        codigoIglesias[cantidad] = iglesia;
         fechas[cantidad] = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         diesmos[cantidad] = diezmo;
         ofrendas[cantidad] = ofrenda;
