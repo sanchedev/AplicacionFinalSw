@@ -10,7 +10,7 @@ package utils;
  */
 public class Errores {
     public static void personalizado(String msg) {
-        System.out.println("\nERROR: "+msg);
+        System.out.println("\nERROR: "+msg+"\n");
     }
     
     public static void deAuthUsuario() {

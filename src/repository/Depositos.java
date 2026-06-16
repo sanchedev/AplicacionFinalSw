@@ -73,7 +73,7 @@ public class Depositos {
         if (cantidad >= LONGITUD_MAXIMA) return -1;
         
         int codigo = 0;
-        if (cantidad == 0) {
+        if (cantidad > 0) {
             codigo = codigos[cantidad-1] + 1;
         }
         

@@ -176,7 +176,7 @@ public class Usuarios {
      * por su posicion en el arreglo. Es utilizado para las vistas de perfil propio de la cuenta.
      */
     public static void mostrarMiUsuario() {
-        int indice = Sesion.verIndice();
+        int indice = buscarUsuario(Sesion.verEmail());
         if (indice < 0 || indice >= cantidad) return;
         
         System.out.println("Correo: " + emails[indice]);

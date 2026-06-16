@@ -18,6 +18,10 @@ public class Lector {
     public static int preguntarEntero(String pregunta) {
         return Integer.parseInt(preguntar(pregunta));
     }
+    public static boolean confirmar(String pregunta) {
+        System.out.print(pregunta+ " (S/N): ");
+        return sc.nextLine().toLowerCase().startsWith("s");
+    }
     public static String leerTexto() {
         return sc.nextLine();
     }

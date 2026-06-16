@@ -12,51 +12,43 @@ import repository.Usuarios;
  * @author alum.l4
  */
 public class Sesion {
-    private static String email;
-    private static String dni;
+    private static String email = "";
+    private static String dni = "";
     
-    public static boolean authUsuario() {
-        if (email != null) return true;
-        
-        String email;
-        String contrasenia;
-        
-        System.out.println("*** INICIAR SESION ***");
-        email = Lector.preguntar("Email");
-        contrasenia = Lector.preguntar("Contrasenia");
-
-        if (Usuarios.auth(email, contrasenia)) {
-            Sesion.email = email;
-            return true;
-        } else {
-            Errores.deAuthUsuario();
-            return false;
-        }
+    public static boolean haAuthUsuario() {
+        return !email.equals("");
     }
-    public static boolean authPersona() {
-        if (dni != null) return true;
+    public static boolean haAuthPersona() {
+        return !dni.equals("");
+    }
+    
+    public static boolean authUsuario(String email, String contrasenia) {
+        if (haAuthUsuario()) return true;
         
-        String dni;
-        
-        System.out.println("*** INGRESANDO COMO PERSONA ***");
-        dni = Lector.preguntar("DNI");
-
-        if (Personas.buscarPersona(dni) != -1) {
-            Sesion.dni = dni;
-            return true;
-        } else {
-            Errores.deAuthPersona();
+        if (!Usuarios.auth(email, contrasenia)) {
             return false;
         }
+        
+        Sesion.email = email;
+        return true;
+    }
+    public static boolean authPersona(String dni) {
+        if (haAuthPersona()) return true;
+        
+        if (Personas.buscarPersona(dni) == -1) {
+            return false;
+        }
+        
+        Sesion.dni = dni;
+        return true;
     }
     
     public static String verEmail() {
         return email;
     }
-    
-    public static int verIndice() {
-        if (email == null) return -1;
-        return Usuarios.buscarUsuario(email);
+    public static String verDNI() {
+        return dni;
     }
+    
 }
 
