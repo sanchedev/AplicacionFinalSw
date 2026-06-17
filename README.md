@@ -1,30 +1,38 @@
-# Sistema de Gestión de Usuarios — Proyecto Final
+# Sistema de Tesorería de la IASD — Proyecto Final
 
 **Curso:** Fundamentos de Programación  
 **Carrera:** Ingeniería de Software — Ciclo 1  
-**IDE:** NetBeans | **Lenguaje:** Java (modo consola)
+**IDE:** NetBeans | **Lenguaje:** Java (Modo Consola)
 
-## Requerimiento General
+---
 
-Elaborar un menú de opciones con 2 submenús aplicando el tema: **Sistema de Tesorería de la IASD** (o afín determinado por el docente).
+## 📌 Requerimiento General
+Elaborar un sistema modular con un menú de opciones interactivo y múltiples submenús enfocado en la gestión financiera y de membresía (**Sistema de Tesorería de la IASD**). El sistema debe operar bajo restricciones de memoria estática (arreglos unidimensionales) y persistencia lógica durante el ciclo de vida de la aplicación.
 
-## Implementación Actual
+## 🏗️ Arquitectura del Proyecto
 
-Sistema de gestión de usuarios con autenticación por roles (Administrador / Usuario común) y CRUD completo sobre arreglos estáticos con menú interactivo por consola.
+El proyecto sigue una estructura limpia separando la interfaz de usuario, los almacenes de datos estáticos y las utilidades del sistema:
 
-## Arquitectura
-
-```
+```text
 src/
-├── vistacontrol/
-│   ├── Index.java            → Punto de entrada (main)
-│   └── IndexUsuarios.java    → Menú y CRUD de usuarios
 ├── repository/
-│   └── Usuarios.java         → Lógica de datos (arreglos estáticos)
-└── utils/
-    ├── Errores.java          → Validaciones y mensajes de error
-    ├── Lector.java           → Entrada por consola (Scanner)
-    └── Sesion.java           → Autenticación y manejo de sesión
+│   ├── Depositos.java       → Gestión de ingresos (Diezmos, Ofrendas, Fechas)
+│   ├── Iglesias.java        → Catálogo de iglesias/distritos y direcciones
+│   ├── Personas.java        → Padrón de miembros y asignación de iglesias
+│   └── Usuarios.java        → Credenciales de acceso y roles del sistema
+├── utils/
+│   ├── Errores.java         → Manejador centralizado de excepciones y alertas
+│   ├── Lector.java          → Captura y validación de tipos de datos por consola
+│   ├── Recibo.java          → Motor de impresión de comprobantes en navegador web
+│   └── Sesion.java          → Controlador de estado de autenticación activa
+└── vistacontrol/
+    ├── Index.java           → Punto de entrada principal de la aplicación
+    ├── IndexTesoreria.java  → Módulo financiero central
+    ├── IndexDepositos.java  → CRUD y registro de aportes económicos
+    ├── IndexFeligres.java   → Panel de usuario (Miembros / Feligresía)
+    ├── IndexIglesias.java   → Gestión de sedes e iglesias locales
+    ├── IndexPersonas.java   → Administración del padrón de miembros
+    └── IndexUsuarios.java   → Panel administrativo de credenciales y accesos
 ```
 
 ## Funcionalidades
@@ -44,16 +52,15 @@ src/
 - Protección: un admin no puede eliminarse a sí mismo
 
 ### Roles
-| Rol           | Permisos                                      |
-|---------------|-----------------------------------------------|
-| Administrador | CRUD sobre cualquier usuario                  |
-| Usuario común | Ver/Editar/Eliminar su propio perfil          |
+| Rol         | Permisos                                      |
+|-------------|-----------------------------------------------|
+| Tesorero(a) | Control total (CRUD) sobre usuarios, miembros, iglesias locales y auditoría de depósitos financieros.                  |
+| Feligres    | Acceso al menú de feligresía: visualización de información personal, historial de depósitos propios y registro de nuevos aportes.          |
 
-### Usuario predefinido
+### Tesorero predefinido
 ```
 Email:       ejemplo@correo.com
 Contraseña:  12345678
-Rol:         Administrador
 ```
 
 ## Cómo ejecutar
@@ -65,7 +72,7 @@ Rol:         Administrador
 
 ## Autores
 
-- José Sánchez (**sanchedev**)
+- José Sánchez (_**@sanchedev**_)
 - Mathias Saavedra
 - Jaasiel Muñoz
 - Bryan Plasencia
