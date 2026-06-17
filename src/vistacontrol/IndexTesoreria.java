@@ -26,7 +26,7 @@ public class IndexTesoreria {
     }
     
     private static void depositos() {
-        // IndexDepositos.inicio();
+        IndexDepositos.inicio();
     }
     
     

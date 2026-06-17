@@ -25,7 +25,7 @@ public class IndexDepositos {
             return;
         }
         
-        for (int i = cantidad - 1; i > 0; i--) {
+        for (int i = cantidad - 1; i >= 0; i--) {
             Depositos.mostrarDeposito(i);
             System.out.println(" - - - - - - - - - - ");
         }
@@ -42,7 +42,7 @@ public class IndexDepositos {
         if (indice == -1) {
             System.out.println("!> El deposito con codigo `"+codigo+"` no existe");
         } else {
-            Iglesias.mostrarDetalleIglesia(indice);
+            Depositos.mostrarDetalleDeposito(indice);
             if (Lector.confirmar("¿Desea imprimir este recibo?")) {
                 Depositos.imprimirDeposito(indice);
             }
@@ -74,7 +74,7 @@ public class IndexDepositos {
                 case 3 -> volver();
                 default -> Errores.deRango();
             }
-        } while (opcion != 7);
+        } while (opcion != 3);
     }
 
 }
