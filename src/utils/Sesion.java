@@ -43,6 +43,17 @@ public class Sesion {
         return true;
     }
     
+    public static void salirUsuario() {
+        if (!haAuthUsuario()) return;
+        
+        Sesion.email = "";
+    }
+    public static void salirPersona() {
+        if (!haAuthPersona()) return;
+        
+        Sesion.dni = "";
+    }
+    
     public static String verEmail() {
         return email;
     }
