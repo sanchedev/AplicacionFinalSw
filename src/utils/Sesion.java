@@ -12,54 +12,66 @@ import repository.Usuarios;
  * @author alum.l4
  */
 public class Sesion {
+
     private static String email = "";
     private static String dni = "";
-    
+
     public static boolean haAuthUsuario() {
         return !email.isEmpty();
     }
+
     public static boolean haAuthPersona() {
         return !dni.isEmpty();
     }
-    
+
     public static boolean authUsuario(String email, String contrasenia) {
-        if (haAuthUsuario()) return true;
-        
+        if (haAuthUsuario()) {
+            return true;
+        }
+
         if (!Usuarios.auth(email, contrasenia)) {
             return false;
         }
-        
+
         Sesion.email = email;
         return true;
     }
+
     public static boolean authPersona(String dni) {
-        if (haAuthPersona()) return true;
-        
+        if (haAuthPersona()) {
+            return true;
+        }
+
         if (Personas.buscarPersona(dni) == -1) {
             return false;
         }
-        
+
         Sesion.dni = dni;
         return true;
     }
-    
+
     public static void salirUsuario() {
-        if (!haAuthUsuario()) return;
-        
+        if (!haAuthUsuario()) {
+            return;
+        }
+
         Sesion.email = "";
     }
+
     public static void salirPersona() {
-        if (!haAuthPersona()) return;
-        
+        if (!haAuthPersona()) {
+            return;
+        }
+
         Sesion.dni = "";
     }
-    
+
     public static String verEmail() {
         return email;
     }
+
     public static String verDNI() {
         return dni;
     }
-    
-}
 
+}

@@ -17,23 +17,25 @@ import java.nio.file.Path;
  * @author Laptop
  */
 public class Archivo {
+
     private final String[] encabezados = new String[1000];
     private int cantidadDeEncabezados = 0;
     private final String[][] datos = new String[1000][1000];
     private final int[] cantidades = new int[1000];
-    
+
     private String nombreArchivo;
-    
+
     public Archivo(String nombreArchivo) {
         this.nombreArchivo = nombreArchivo;
     }
-    
+
     public void agregarCabecera(String nombre) {
         encabezados[cantidadDeEncabezados] = nombre;
         cantidadDeEncabezados++;
     }
+
     public int buscarCabecera(String nombre) {
-       int indice = -1;
+        int indice = -1;
         for (int i = 0; i < cantidadDeEncabezados; i++) {
             if (encabezados[i].equals(nombre)) {
                 indice = i;
@@ -42,36 +44,39 @@ public class Archivo {
         }
         return indice;
     }
+
     public void agregarDatos(String nombre, String dato) {
-        int indice= buscarCabecera(nombre);
+        int indice = buscarCabecera(nombre);
         if (indice == -1) {
             return;
         }
-        datos[indice][cantidades[indice]]=dato;
+        datos[indice][cantidades[indice]] = dato;
         cantidades[indice]++;
     }
-    
-    public String verDato(String nombre, int indice){
+
+    public String verDato(String nombre, int indice) {
         int indicecabecera = buscarCabecera(nombre);
         if (indicecabecera == -1) {
-            return" ";
+            return " ";
         }
         return datos[indicecabecera][indice];
     }
+
     public String verCabecera(int indice) {
-        if (indice < 0 || indice >= cantidadDeEncabezados){
+        if (indice < 0 || indice >= cantidadDeEncabezados) {
             return "";
         }
         return encabezados[indice];
     }
-    
+
     public int verCantidad(String nombre) {
         int indice = buscarCabecera(nombre);
-        if (indice== -1){
+        if (indice == -1) {
             return 0;
         }
-       return cantidades[indice]; 
+        return cantidades[indice];
     }
+
     public int verCantidadDatos() {
         int cantidad = cantidades[0];
         for (int i = 0; i < cantidadDeEncabezados; i++) {
@@ -81,53 +86,58 @@ public class Archivo {
         }
         return cantidad;
     }
-    public int verCantidadCabeceras(){
-       return cantidadDeEncabezados;
+
+    public int verCantidadCabeceras() {
+        return cantidadDeEncabezados;
     }
-    
-    public void guardar(){
+
+    public void guardar() {
         Path path = Path.of(nombreArchivo);
         try {
             Files.createDirectories(path.getParent());
-            
+
             try (FileWriter fw = new FileWriter(path.toFile(), false)) {
                 PrintWriter escri = new PrintWriter(fw);
                 for (int i = 0; i < cantidadDeEncabezados; i++) {
-                    if (i!= 0) {
+                    if (i != 0) {
                         escri.print(";");
                     }
                     escri.print(encabezados[i]);
                 }
                 escri.println();
                 for (int i = 0; i < cantidades[0]; i++) {
-                    if (i!= 0) {
+                    if (i != 0) {
                         escri.println();
                     }
                     for (int j = 0; j < cantidadDeEncabezados; j++) {
-                        if (j!= 0) {
+                        if (j != 0) {
                             escri.print(";");
                         }
                         escri.print(datos[j][i]);
                     }
                 }
             }
-    
-        } catch (IOException e) {}
+
+        } catch (IOException e) {
+        }
     }
-    public void leer(){
+
+    public void leer() {
         Path path = Path.of(nombreArchivo);
         try {
             Files.createDirectories(path.getParent());
             BufferedReader bf = new BufferedReader(new FileReader(path.toFile()));
             String linea = bf.readLine();
             String[] encabezadosLeidos = linea.split(";");
-            
+
             if (verCantidadCabeceras() != encabezadosLeidos.length) {
                 return;
             }
-            
+
             for (int i = 0; i < encabezadosLeidos.length; i++) {
-                if (!verCabecera(i).equals(encabezadosLeidos[i])) return;
+                if (!verCabecera(i).equals(encabezadosLeidos[i])) {
+                    return;
+                }
             }
             while ((linea = bf.readLine()) != null) {
                 String[] fila = linea.split(";");
@@ -138,7 +148,8 @@ public class Archivo {
                     agregarDatos(encabezadosLeidos[i], fila[i]);
                 }
             }
-        } catch (IOException e) {}
-        
+        } catch (IOException e) {
+        }
+
     }
 }

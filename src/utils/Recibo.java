@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package utils;
 
 import java.io.File;
@@ -12,12 +16,16 @@ import repository.Personas;
  * @author sanchedev
  */
 public class Recibo {
+
     private File archivoHtml;
     private final int indexDeposito;
 
     /**
-     * Constructor que inicializa el recibo y genera automáticamente el archivo HTML.
-     * @param indexDeposito Posición del depósito dentro de los arreglos del repositorio.
+     * Constructor que inicializa el recibo y genera automáticamente el archivo
+     * HTML.
+     *
+     * @param indexDeposito Posición del depósito dentro de los arreglos del
+     * repositorio.
      */
     public Recibo(int indexDeposito) {
         this.indexDeposito = indexDeposito;
@@ -25,8 +33,8 @@ public class Recibo {
     }
 
     /**
-     * Extrae la información de los repositorios estáticos y genera el archivo HTML
-     * con un diseño limpio y profesional de ticketera térmica.
+     * Extrae la información de los repositorios estáticos y genera el archivo
+     * HTML con un diseño limpio y profesional de ticketera térmica.
      */
     private void generarArchivo() {
         int codigoDeposito = Depositos.verCodigo(indexDeposito);
@@ -35,13 +43,13 @@ public class Recibo {
         String fecha = Depositos.verFecha(indexDeposito);
         double diezmo = Depositos.verDiezmo(indexDeposito);
         double ofrenda = Depositos.verOfrenda(indexDeposito);
-        
+
         int indicePersona = Personas.buscarPersona(dniAportante);
         String nombrePersona = "Visitante / Anónimo";
         if (indicePersona != -1) {
             nombrePersona = Personas.verNombre(indicePersona);
         }
-        
+
         int indiceIglesia = Iglesias.buscarIglesia(codigoIglesia);
         String nombreIglesia = "IASD 404";
         String direccionIglesia = "No se pudo encontrar la iglesia";
@@ -80,7 +88,7 @@ public class Recibo {
             writer.write("  <h2 class='center bold' style='margin-bottom: 5px;'>" + nombreIglesia + "</h2>\n");
             writer.write("  <p class='center' style='margin-top: 0; font-size: 12px;'>RUC: 00000000000<br>" + direccionIglesia + "</p>\n");
             writer.write("  <div class='divider'></div>\n");
-            
+
             // Datos de la Transacción
             writer.write("  <p class='bold center' style='margin: 10px 0;'>COMPROBANTE DE APORTE</p>\n");
             writer.write("  <div class='flex'><span>Nro. Operación:</span> <span class='bold'>" + codigoDeposito + "</span></div>\n");
@@ -88,58 +96,59 @@ public class Recibo {
             writer.write("  <div class='flex'><span>DNI:</span> <span>" + dniAportante + "</span></div>\n");
             writer.write("  <div class='flex'><span>Aportante:</span> <span class='bold'>" + nombrePersona + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
-            
+
             // Desglose de importes (Agregado el formato de dos decimales .2f)
             writer.write("  <p class='bold' style='font-size: 14px; margin: 5px 0;'>DETALLE</p>\n");
             writer.write("  <div class='flex'><span>Diezmo</span> <span>S/. " + String.format("%.2f", diezmo) + "</span></div>\n");
             writer.write("  <div class='flex'><span>Ofrenda</span> <span>S/. " + String.format("%.2f", ofrenda) + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
-            
+
             // Total a pagar
             writer.write("  <div class='flex bold' style='font-size: 15px;'><span>TOTAL GENERAL:</span> <span>S/. " + String.format("%.2f", totalCalculado) + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
-            
+
             // Mensaje de cierre
             writer.write("  <p class='center bold' style='margin-top: 15px; font-size: 12px;'>¡Que Dios bendiga su generosidad!</p>\n");
             writer.write("</div>\n");
 
             writer.write("</body>\n</html>");
-            
+
         } catch (IOException e) {
             System.err.println("Error crítico al estructurar el recibo HTML: " + e.getMessage());
         }
     }
 
     /**
-     * Lanza el navegador web predeterminado del sistema operativo apuntando al archivo generado.
+     * Lanza el navegador web predeterminado del sistema operativo apuntando al
+     * archivo generado.
      */
     public void abrir() {
-    if (archivoHtml == null || !archivoHtml.exists()) {
-        System.err.println("Error: El archivo del recibo no existe.");
-        return;
-    }
-    
-        System.out.println("Abriendo el recibo...");
-    
-    try {
-        String os = System.getProperty("os.name").toLowerCase();
-        ProcessBuilder pb;
-
-        if (os.contains("win")) {
-            pb = new ProcessBuilder("cmd.exe", "/c", "start", '\"' + "Recibo" + '\"', archivoHtml.getAbsolutePath());
-        } else if (os.contains("mac")) {
-            pb = new ProcessBuilder("open", archivoHtml.getAbsolutePath());
-        } else {
-            pb = new ProcessBuilder("xdg-open", archivoHtml.getAbsolutePath());
+        if (archivoHtml == null || !archivoHtml.exists()) {
+            System.err.println("Error: El archivo del recibo no existe.");
+            return;
         }
 
-        pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
-        pb.redirectError(ProcessBuilder.Redirect.DISCARD);
+        System.out.println("Abriendo el recibo...");
 
-        pb.start();
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            ProcessBuilder pb;
 
-    } catch (IOException e) {
-        System.err.println("No se pudo abrir el recibo en el navegador: " + e.getMessage());
+            if (os.contains("win")) {
+                pb = new ProcessBuilder("cmd.exe", "/c", "start", '\"' + "Recibo" + '\"', archivoHtml.getAbsolutePath());
+            } else if (os.contains("mac")) {
+                pb = new ProcessBuilder("open", archivoHtml.getAbsolutePath());
+            } else {
+                pb = new ProcessBuilder("xdg-open", archivoHtml.getAbsolutePath());
+            }
+
+            pb.redirectOutput(ProcessBuilder.Redirect.DISCARD);
+            pb.redirectError(ProcessBuilder.Redirect.DISCARD);
+
+            pb.start();
+
+        } catch (IOException e) {
+            System.err.println("No se pudo abrir el recibo en el navegador: " + e.getMessage());
+        }
     }
-}
 }

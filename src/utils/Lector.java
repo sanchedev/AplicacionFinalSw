@@ -3,47 +3,84 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package utils;
+
 import java.util.Scanner;
+
 /**
  *
  * @author alum.l4
  */
 public class Lector {
+
     private static final Scanner sc = new Scanner(System.in);
-    
+
     public static String preguntar(String pregunta) {
-        System.out.print(pregunta+ ": ");
+        System.out.print(pregunta + ": ");
         return sc.nextLine();
     }
+
     public static String preguntar(String pregunta, String porDefecto) {
-        System.out.print(pregunta + " (defecto: "+porDefecto+"): ");
+        System.out.print(pregunta + " [por defecto: " + porDefecto + "]: ");
         String respuesta = sc.nextLine();
-        if (respuesta.isEmpty()) return porDefecto;
+        if (respuesta.isEmpty()) {
+            return porDefecto;
+        }
         return respuesta;
     }
+
     public static int preguntarEntero(String pregunta) {
-        return Integer.parseInt(preguntar(pregunta));
+        String respuesta;
+        do {
+            respuesta = preguntar(pregunta);
+            try {
+                return Integer.parseInt(respuesta);
+            } catch (NumberFormatException e) {
+                Errores.personalizado("`" + respuesta + "` no es un numero valido...");
+            }
+        } while (true);
     }
+
     public static int preguntarEntero(String pregunta, int porDefecto) {
-        String respuesta = preguntar(pregunta, Integer.toString(porDefecto));
-        return Integer.parseInt(respuesta);
+        String respuesta;
+        do {
+            respuesta = preguntar(pregunta, Integer.toString(porDefecto));
+            try {
+                return Integer.parseInt(respuesta);
+            } catch (NumberFormatException e) {
+                Errores.personalizado("`" + respuesta + "` no es un numero valido...");
+            }
+        } while (true);
     }
+
     public static double preguntarDecimal(String pregunta) {
-        return Double.parseDouble(preguntar(pregunta));
+        String respuesta;
+        do {
+            respuesta = preguntar(pregunta);
+            try {
+                return Double.parseDouble(respuesta);
+            } catch (NumberFormatException e) {
+                Errores.personalizado("`" + respuesta + "` no es un numero valido...");
+            }
+        } while (true);
     }
+
+    public static double preguntarDouble(String pregunta, double porDefecto) {
+        String respuesta;
+        do {
+            respuesta = preguntar(pregunta, Double.toString(porDefecto));
+            try {
+                return Double.parseDouble(respuesta);
+            } catch (NumberFormatException e) {
+                Errores.personalizado("`" + respuesta + "` no es un numero valido...");
+            }
+        } while (true);
+    }
+
     public static boolean confirmar(String pregunta) {
-        System.out.print(pregunta+ " (S/N): ");
-        return sc.nextLine().toLowerCase().startsWith("s");
+        System.out.print(pregunta + " (S/N): ");
+        return sc.nextLine().trim().toLowerCase().startsWith("s");
     }
-    public static String leerTexto() {
-        return sc.nextLine();
-    }
-    public static int leerEntero() {
-        return Integer.parseInt(leerTexto());
-    }
-    public static boolean leerBooleano() {
-        return leerTexto().toLowerCase().startsWith("s");
-    }
+
     public static void cerrar() {
         sc.close();
     }
