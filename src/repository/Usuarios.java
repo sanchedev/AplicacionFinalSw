@@ -4,6 +4,7 @@
  */
 package repository;
 
+import utils.Archivo;
 import utils.Sesion;
 
 /**
@@ -17,8 +18,43 @@ public class Usuarios {
     private static final String[] nombres = new String[LONGITUD_MAXIMA];
     private static int cantidad = 0;
     
+    private static Archivo genArchivo() {
+        Archivo archivo = new Archivo("saveds/db/usuarios.csv");
+        archivo.agregarCabecera("emails");
+        archivo.agregarCabecera("contrasenias");
+        archivo.agregarCabecera("nombres");
+        return archivo;
+    }
+    
+    private static void guardarUsuarios() {
+        Archivo archivo = genArchivo();
+        
+        for (int i = 0; i < cantidad; i++) {
+            archivo.agregarDatos(archivo.verCabecera(0), emails[i]);
+            archivo.agregarDatos(archivo.verCabecera(1), contrasenias[i]);
+            archivo.agregarDatos(archivo.verCabecera(2), nombres[i]);
+        }
+        
+        archivo.guardar();
+    }
     private static void cargarUsuarios() {
-        crearUsuario("ejemplo@correo.com", "Mateo Rodriguez", "12345678");
+        Archivo archivo = genArchivo();
+        archivo.leer();
+        
+        for (int i = 0; i < archivo.verCantidadDatos(); i++) {
+            String email = archivo.verDato(archivo.verCabecera(0), i);
+            String contrasenia = archivo.verDato(archivo.verCabecera(1), i);
+            String nombre = archivo.verDato(archivo.verCabecera(2), i);
+            
+            emails[cantidad] = email;
+            nombres[cantidad] = nombre;
+            contrasenias[cantidad] = contrasenia;
+
+            cantidad++;
+        }
+        if (cantidad == 0) {
+            crearUsuario("ejemplo@correo.com", "Mateo Rodriguez", "12345678");
+        }
     }
     
     /**
@@ -76,6 +112,7 @@ public class Usuarios {
         contrasenias[cantidad] = contrasenia;
         
         cantidad++;
+        guardarUsuarios();
         
         return cantidad - 1;
     }
@@ -96,6 +133,8 @@ public class Usuarios {
         nombres[index] = nombre;
         contrasenias[index] = contrasenia;
         
+        guardarUsuarios();
+        
         return index;
     }
     
@@ -115,6 +154,7 @@ public class Usuarios {
             contrasenias[i] = contrasenias[i+1];
             nombres[i] = nombres[i+1];
         }
+        guardarUsuarios();
         cantidad--;
 
         return true;
