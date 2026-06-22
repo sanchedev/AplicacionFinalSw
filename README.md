@@ -1,78 +1,116 @@
-# Sistema de Tesorería de la IASD — Proyecto Final
+# Sistema de Tesoreria de la IASD — Proyecto Final
 
-**Curso:** Fundamentos de Programación  
-**Carrera:** Ingeniería de Software — Ciclo 1  
+**Curso:** Fundamentos de Programacion  
+**Carrera:** Ingenieria de Software — Ciclo 1  
 **IDE:** NetBeans | **Lenguaje:** Java (Modo Consola)
 
 ---
 
-## 📌 Requerimiento General
-Elaborar un sistema modular con un menú de opciones interactivo y múltiples submenús enfocado en la gestión financiera y de membresía (**Sistema de Tesorería de la IASD**). El sistema debe operar bajo restricciones de memoria estática (arreglos unidimensionales) y persistencia lógica durante el ciclo de vida de la aplicación.
+## Requerimiento General
 
-## 🏗️ Arquitectura del Proyecto
+Elaborar un sistema modular con un menu de opciones interactivo y multiples submenus enfocado en la gestion financiera y de membresia (**Sistema de Tesoreria de la IASD**). El sistema debe operar bajo restricciones de memoria estatica (arreglos unidimensionales) y persistencia logica durante el ciclo de vida de la aplicacion.
 
-El proyecto sigue una estructura limpia separando la interfaz de usuario, los almacenes de datos estáticos y las utilidades del sistema:
+## Arquitectura del Proyecto
+
+El proyecto sigue una estructura limpia separando la interfaz de usuario, los almacenes de datos estaticos y las utilidades del sistema:
 
 ```text
 src/
 ├── repository/
-│   ├── Depositos.java       → Gestión de ingresos (Diezmos, Ofrendas, Fechas)
-│   ├── Iglesias.java        → Catálogo de iglesias/distritos y direcciones
-│   ├── Personas.java        → Padrón de miembros y asignación de iglesias
-│   └── Usuarios.java        → Credenciales de acceso y roles del sistema
+│   ├── Miembros.java        → Modelo unificado de miembros (antes Personas + Usuarios)
+│   ├── Credenciales.java    → Credenciales de acceso y roles del sistema
+│   ├── Depositos.java       → Gestion de ingresos (4 tipos de monto)
+│   ├── Iglesias.java        → Catalogo de iglesias/distritos
+│   └── Gastos.java          → Registro de retiros de dinero por ministerio
 ├── utils/
-│   ├── Errores.java         → Manejador centralizado de excepciones y alertas
-│   ├── Lector.java          → Captura y validación de tipos de datos por consola
-│   ├── Recibo.java          → Motor de impresión de comprobantes en navegador web
-│   └── Sesion.java          → Controlador de estado de autenticación activa
+│   ├── Archivo.java         → Motor CSV (delimitador punto y coma)
+│   ├── Constantes.java      → Listas estaticas de departamentos y cargos
+│   ├── Validaciones.java    → Validacion de DNI, fecha, correo, telefono, monto
+│   ├── Exportador.java      → Exportacion de reportes a CSV y HTML
+│   ├── Lector.java          → Captura y validacion de datos por consola
+│   ├── Recibo.java          → Generacion de recibos HTML en navegador
+│   ├── Sesion.java          → Controlador de estado de autenticacion
+│   └── Errores.java         → Mensajes de error centralizados
 └── vistacontrol/
-    ├── Index.java           → Punto de entrada principal de la aplicación
-    ├── IndexTesoreria.java  → Módulo financiero central
-    ├── IndexDepositos.java  → CRUD y registro de aportes económicos
-    ├── IndexFeligres.java   → Panel de usuario (Miembros / Feligresía)
-    ├── IndexIglesias.java   → Gestión de sedes e iglesias locales
-    ├── IndexPersonas.java   → Administración del padrón de miembros
-    └── IndexUsuarios.java   → Panel administrativo de credenciales y accesos
+    ├── Index.java           → Punto de entrada + login + creacion de admin
+    ├── IndexSistema.java    → Menu principal post-login (con contadores)
+    ├── IndexMiembros.java   → CRUD miembros + asignacion de roles
+    ├── IndexIglesia.java    → CRUD iglesias
+    ├── IndexInformes.java   → Depositos + resumenes + balance + exportacion
+    └── IndexGastos.java     → Registro de gastos + exportacion
 ```
 
 ## Funcionalidades
 
-### CRUD Básico
-- **Crear** usuario con validación de email repetido
-- **Listar** todos los usuarios
-- **Buscar** por coincidencia parcial de nombre
-- **Editar** perfil propio (previa autenticación)
-- **Eliminar** usuario (con confirmación y protección contra auto-eliminación)
+### CRUD de Miembros
+- **Registrar** miembro con validacion de DNI, fecha, correo, telefono e iglesia obligatoria
+- **Listar** todos los miembros
+- **Buscar** por nombre (coincidencia parcial)
+- **Editar** perfil de miembro
+- **Asignar rol** a miembro (departamento + cargo + fecha de expiracion)
+- **Retirar rol** a miembro
+- **Ver miembros** filtrados por departamento
+
+### CRUD de Iglesias
+- **Registrar** iglesia con nombre, direccion y aforo
+- **Listar** todas las iglesias
+- **Buscar** por nombre
+- **Ver detalle** de iglesia
+- **Editar** informacion de iglesia
+- **Borrar** iglesia (desasigna automaticamente sus miembros)
+
+### Depositos y Informes
+- **Registrar deposito** con 4 tipos de monto (diezmo, ofrenda sistematica, proyecto local, pagos a instituciones)
+- **Modo aportante**: miembro registrado, invitado (sin registro) o anonimo
+- **Ver depositos** por iglesia o todos
+- **Resumen por tipo de aporte** — totales por categora
+- **Resumen por iglesia** — totales agrupados por sede
+- **Balance general** — ingresos vs gastos
+
+### Gastos
+- **Registrar gasto** por iglesia y ministerio
+- **Ver gastos** por iglesia o todos
+- **Validacion** de monto positivo e iglesia valida
+
+### Exportacion de Reportes
+- **CSV** — archivos compatibles con Excel (se abren automaticamente)
+- **HTML** — reportes estilizados (imprimir a PDF desde el navegador con Ctrl+P)
+- Disponible en: listados de depositos, listados de gastos, resumenes y balance
 
 ### Validaciones
-- Email duplicado al registrar
-- Límite de almacenamiento: 1000 usuarios
-- Autenticación requerida antes de editar/eliminar
-- Rango válido en opciones del menú
-- Protección: un admin no puede eliminarse a sí mismo
+- DNI: 8 digitos numericos
+- Fecha: formato dd-MM-yyyy
+- Correo: debe contener @
+- Telefono: 9 digitos numericos
+- Monto: debe ser positivo
+- Iglesia: debe existir en el catalogo
+- Filas invalidas en CSV se omiten y limpian automaticamente
 
 ### Roles
-| Rol         | Permisos                                      |
-|-------------|-----------------------------------------------|
-| Tesorero(a) | Control total (CRUD) sobre usuarios, miembros, iglesias locales y auditoría de depósitos financieros.                  |
-| Feligres    | Acceso al menú de feligresía: visualización de información personal, historial de depósitos propios y registro de nuevos aportes.          |
+| Rol | Permisos |
+|-----|----------|
+| Administrador | Control total: miembros, iglesias, depositos, gastos y reportes |
+| Invitado | Registro temporal de depositos sin necesidad de cuenta |
 
-### Tesorero predefinido
+### Cuenta por defecto
 ```
-Email:       ejemplo@correo.com
-Contraseña:  12345678
+Email:       admin@iasd.com
+Contrasena:  admin123
 ```
 
-## Cómo ejecutar
+Se crea automaticamente en la primera ejecucion. Se recomienda eliminarla despues de crear el administrador real.
+
+## Como ejecutar
 
 1. Clonar el repositorio
 2. Abrir en NetBeans
-3. Limpiar y construir proyecto
-4. Ejecutar `Index.java`
+3. Limpiar y construir proyecto (Run > Clean and Build)
+4. Ejecutar `Index.java` (Run > Run Project)
+5. Iniciar sesion con las credenciales por defecto
 
 ## Autores
 
-- José Sánchez (_**@sanchedev**_)
+- Jose Sanchez (_**@sanchedev**_)
 - Mathias Saavedra
-- Jaasiel Muñoz
+- Jaasiel Munoz
 - Bryan Plasencia
