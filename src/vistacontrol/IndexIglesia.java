@@ -4,15 +4,10 @@ import repository.Iglesias;
 import utils.Errores;
 import utils.Lector;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 /**
- *
- * @author sanchedev
+ * Gestion de iglesias: CRUD completo.
  */
-public class IndexIglesias {
+public class IndexIglesia {
 
     private static void listar() {
         System.out.println("*** LISTAR IGLESIAS ***");
@@ -36,7 +31,7 @@ public class IndexIglesias {
 
         String nombre = Lector.preguntar("Nombre");
         String direccion = Lector.preguntar("Direccion");
-        int aforo = Lector.preguntarEntero("Aforo");
+        int aforo = Lector.preguntarEntero("Aforo (capacidad maxima)");
 
         Iglesias.agregarIglesia(nombre, direccion, aforo);
 
@@ -46,23 +41,29 @@ public class IndexIglesias {
     private static void ver() {
         System.out.println("*** VER IGLESIA ***");
 
-        int codigo = Lector.preguntarEntero("Codigo de la Iglesia");
+        int codigo;
+        do {
+            Iglesias.mostrarGuiaIglesias();
+            codigo = Lector.preguntarEntero("Codigo de la Iglesia [0-" + (Iglesias.verCantidad() - 1) + "]");
+            if (Iglesias.buscarIglesia(codigo) != -1) {
+                break;
+            }
+            Errores.personalizado("Codigo de iglesia invalido. Intente de nuevo.");
+        } while (true);
 
-        int indice = Iglesias.buscarIglesia(codigo);
-
-        if (indice == -1) {
-            System.out.println("!> La iglesia con codigo `" + codigo + "` no existe");
-        } else {
-            Iglesias.mostrarDetalleIglesia(indice);
-        }
+        Iglesias.mostrarDetalleIglesia(Iglesias.buscarIglesia(codigo));
     }
 
     private static void buscar() {
         System.out.println("*** BUSCAR IGLESIA ***");
 
-        String nombre = Lector.preguntar("Nombre");
-
+        String nombre = Lector.preguntar("Nombre (o parte del nombre)");
         int[] indices = Iglesias.buscarIglesias(nombre);
+
+        if (indices.length == 0) {
+            System.out.println("!> No se encontraron iglesias con \"" + nombre + "\"");
+            return;
+        }
 
         for (int i = 0; i < indices.length; i++) {
             Iglesias.mostrarIglesia(indices[i]);
@@ -74,37 +75,44 @@ public class IndexIglesias {
     private static void editar() {
         System.out.println("*** EDITAR IGLESIA ***");
 
-        int codigo = Lector.preguntarEntero("Codigo de la Iglesia");
+        int codigo;
+        do {
+            Iglesias.mostrarGuiaIglesias();
+            codigo = Lector.preguntarEntero("Codigo de la Iglesia [0-" + (Iglesias.verCantidad() - 1) + "]");
+            if (Iglesias.buscarIglesia(codigo) != -1) {
+                break;
+            }
+            Errores.personalizado("Codigo de iglesia invalido. Intente de nuevo.");
+        } while (true);
 
         int indice = Iglesias.buscarIglesia(codigo);
+        String nombre = Lector.preguntar("Nombre", Iglesias.verNombre(indice));
+        String direccion = Lector.preguntar("Direccion", Iglesias.verDireccion(indice));
+        int aforo = Lector.preguntarEntero("Aforo", Iglesias.verAforo(indice));
 
-        if (indice == -1) {
-            System.out.println("!> La iglesia con codigo `" + codigo + "` no existe");
-        } else {
-            String nombre = Lector.preguntar("Nombre", Iglesias.verNombre(indice));
-            String direccion = Lector.preguntar("Direccion", Iglesias.verDireccion(indice));
-            int aforo = Lector.preguntarEntero("Aforo", Iglesias.verAforo(indice));
-
-            Iglesias.editarIglesia(codigo, nombre, direccion, aforo);
-        }
+        Iglesias.editarIglesia(codigo, nombre, direccion, aforo);
+        System.out.println("Iglesia editada exitosamente!");
     }
 
     private static void borrar() {
         System.out.println("*** BORRAR IGLESIA ***");
 
-        int codigo = Lector.preguntarEntero("Codigo de la Iglesia");
+        int codigo;
+        do {
+            Iglesias.mostrarGuiaIglesias();
+            codigo = Lector.preguntarEntero("Codigo de la Iglesia [0-" + (Iglesias.verCantidad() - 1) + "]");
+            if (Iglesias.buscarIglesia(codigo) != -1) {
+                break;
+            }
+            Errores.personalizado("Codigo de iglesia invalido. Intente de nuevo.");
+        } while (true);
 
         int indice = Iglesias.buscarIglesia(codigo);
+        Iglesias.mostrarDetalleIglesia(indice);
 
-        if (indice == -1) {
-            System.out.println("!> La iglesia con codigo `" + codigo + "` no existe");
-        } else {
-            Iglesias.mostrarDetalleIglesia(indice);
-
-            if (Lector.confirmar("¿Desea eliminar iglesia?")) {
-                Iglesias.borrarIglesia(codigo);
-                System.out.println("Iglesia eliminada exitosamente!");
-            }
+        if (Lector.confirmar("Desea eliminar iglesia? (sus miembros seran desasignados)")) {
+            Iglesias.borrarIglesia(codigo);
+            System.out.println("Iglesia eliminada exitosamente!");
         }
     }
 
@@ -113,9 +121,10 @@ public class IndexIglesias {
     }
 
     public static void mostrarMenu() {
+        int cantidad = Iglesias.verCantidad();
         System.out.println("");
-        System.out.println("*** GESTION DE IGLESIAS ***");
-        System.out.println("1. Ver Todas Los Iglesias");
+        System.out.println("*** GESTION DE IGLESIAS *** (" + cantidad + " iglesia(s))");
+        System.out.println("1. Ver Todas las Iglesias");
         System.out.println("2. Registrar Iglesia");
         System.out.println("3. Ver Iglesia");
         System.out.println("4. Buscar Iglesias");
@@ -151,5 +160,4 @@ public class IndexIglesias {
             }
         } while (opcion != 7);
     }
-
 }

@@ -1,30 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package vistacontrol;
 
+import repository.Credenciales;
 import repository.Depositos;
+import repository.Gastos;
 import repository.Iglesias;
-import repository.Personas;
-import utils.Sesion;
-import utils.Lector;
-import repository.Usuarios;
+import repository.Miembros;
 import utils.Errores;
+import utils.Lector;
+import utils.Sesion;
 
 /**
- *
- * @author alum.l4
+ * Punto de entrada principal de la aplicacion.
+ * Menu de login simplificado: solo sesion de usuario (tesorero).
  */
 public class Index {
 
-    private static void entrarTesoreria() {
+    private static void iniciarSesion() {
         String email;
         String contrasenia;
-        boolean haEntrado = Sesion.haAuthUsuario();
+        boolean haEntrado = Sesion.haAuth();
         boolean haSkipeado = false;
 
-        // Si no tiene sesion abierta y no ha skipeado
         while (!haEntrado && !haSkipeado) {
             System.out.println("*** INICIAR SESION ***");
             email = Lector.preguntar("Email");
@@ -33,37 +29,21 @@ public class Index {
             haEntrado = Sesion.authUsuario(email, contrasenia);
             if (!haEntrado) {
                 Errores.deAuthUsuario();
-                haSkipeado = !Lector.confirmar("¿Desea volver a intentar?");
+                haSkipeado = !Lector.confirmar("Desea volver a intentar?");
             }
         }
 
         if (haEntrado) {
-            IndexTesoreria.inicio();
-        }
-
-        System.out.println("");
-    }
-
-    private static void entrarFeligres() {
-        String dni;
-        boolean haEntrado = Sesion.haAuthPersona() || Lector.confirmar("¿Desea entrar como incognito?");
-        boolean haSkipeado = false;
-
-        // Si no tiene sesion abierta y no ha skipeado
-        while (!haEntrado && !haSkipeado) {
-            System.out.println("*** ENTRAR ***");
-
-            dni = Lector.preguntar("DNI");
-
-            haEntrado = Sesion.authPersona(dni);
-            if (!haEntrado) {
-                Errores.deAuthPersona();
-                haSkipeado = !Lector.confirmar("¿Desea volver a intentar?");
+            String dni = Sesion.verDniMiembro();
+            if (Miembros.verificarRolExpirado(dni)) {
+                Miembros.retirarRol(dni);
+                Credenciales.eliminarCredencial(dni);
+                System.out.println("Su acceso ha expirado. Contacte al administrador.");
+                Sesion.salir();
+                return;
             }
-        }
 
-        if (haEntrado) {
-            IndexFeligres.inicio();
+            IndexSistema.inicio();
         }
 
         System.out.println("");
@@ -74,40 +54,54 @@ public class Index {
     }
 
     public static void mostrarMenu() {
-        System.out.println("*** BIENVENIDO(A) ***");
-        System.out.println("1. Entrar como Tesorero(a)");
-        System.out.println("2. Entrar como Feligres");
-        System.out.println("3. Salir");
+        System.out.println("*** SISTEMA DE TESORERIA IASD ***");
+        System.out.println("1. Iniciar Sesion");
+        System.out.println("2. Salir");
     }
 
     public static void inicio() {
-        Usuarios.cargar();
+        Credenciales.cargar();
         Iglesias.cargar();
-        Personas.cargar();
+        Miembros.cargar();
         Depositos.cargar();
+        Gastos.cargar();
+
+        if (Credenciales.verCantidad() == 0) {
+            System.out.println("""
+                    BIENVENIDO(A)!
+                    ESTA ES LA PRIMERA VEZ QUE ABRES LA APLICACION.
+                    
+                    Se ha creado una cuenta de administrador:
+                      Email: admin@iasd.com
+                      Contrasenia: admin123
+                    
+                    Inicia sesion y crea los miembros que necesites.
+                    Por seguridad, elimina esta cuenta despues.
+                    """);
+
+            Miembros.crearMiembro("00000000", "Administrador", "", "admin@iasd.com", "", -1);
+            Credenciales.crearCredencial("admin@iasd.com", "admin123", "00000000");
+        }
 
         int opcion;
         do {
             mostrarMenu();
-            opcion = Lector.preguntarEntero("Elige una opcion [1-3]");
+            opcion = Lector.preguntarEntero("Elige una opcion [1-2]");
             System.out.println("");
 
             switch (opcion) {
                 case 1 ->
-                    entrarTesoreria();
+                    iniciarSesion();
                 case 2 ->
-                    entrarFeligres();
-                case 3 ->
                     salir();
                 default ->
                     Errores.deRango();
             }
-        } while (opcion != 3);
+        } while (opcion != 2);
         Lector.cerrar();
     }
 
     public static void main(String[] args) {
         inicio();
     }
-
 }

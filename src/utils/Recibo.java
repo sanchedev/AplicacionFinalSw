@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package utils;
 
 import java.io.File;
@@ -9,11 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import repository.Depositos;
 import repository.Iglesias;
-import repository.Personas;
+import repository.Miembros;
 
 /**
- *
- * @author sanchedev
+ * Generador de recibos HTML en formato ticketera termica.
  */
 public class Recibo {
 
@@ -21,10 +16,10 @@ public class Recibo {
     private final int indexDeposito;
 
     /**
-     * Constructor que inicializa el recibo y genera automáticamente el archivo
+     * Constructor que inicializa el recibo y genera automaticamente el archivo
      * HTML.
      *
-     * @param indexDeposito Posición del depósito dentro de los arreglos del
+     * @param indexDeposito Posicion del deposito dentro de los arreglos del
      * repositorio.
      */
     public Recibo(int indexDeposito) {
@@ -33,8 +28,8 @@ public class Recibo {
     }
 
     /**
-     * Extrae la información de los repositorios estáticos y genera el archivo
-     * HTML con un diseño limpio y profesional de ticketera térmica.
+     * Extrae la informacion de los repositorios estaticos y genera el archivo
+     * HTML con un diseno limpio y profesional de ticketera termica.
      */
     private void generarArchivo() {
         int codigoDeposito = Depositos.verCodigo(indexDeposito);
@@ -42,12 +37,14 @@ public class Recibo {
         int codigoIglesia = Depositos.verCodigoIglesia(indexDeposito);
         String fecha = Depositos.verFecha(indexDeposito);
         double diezmo = Depositos.verDiezmo(indexDeposito);
-        double ofrenda = Depositos.verOfrenda(indexDeposito);
+        double ofrendaSistem = Depositos.verOfrendaSistemtica(indexDeposito);
+        double proyectoLocal = Depositos.verProyectoLocal(indexDeposito);
+        double pagoInstitucion = Depositos.verPagoInstitucion(indexDeposito);
 
-        int indicePersona = Personas.buscarPersona(dniAportante);
-        String nombrePersona = "Visitante / Anónimo";
+        int indicePersona = Miembros.buscarMiembro(dniAportante);
+        String nombrePersona = "Visitante / Anonimo";
         if (indicePersona != -1) {
-            nombrePersona = Personas.verNombre(indicePersona);
+            nombrePersona = Miembros.verNombre(indicePersona);
         }
 
         int indiceIglesia = Iglesias.buscarIglesia(codigoIglesia);
@@ -58,7 +55,7 @@ public class Recibo {
             direccionIglesia = Iglesias.verDireccion(indiceIglesia);
         }
 
-        double totalCalculado = diezmo + ofrenda;
+        double totalCalculado = diezmo + ofrendaSistem + proyectoLocal + pagoInstitucion;
 
         String nombreArchivo = "recibo_pago_" + codigoDeposito + ".html";
 
@@ -83,38 +80,35 @@ public class Recibo {
             writer.write("  .divider { border-top: 1px dashed #333; margin: 12px 0; }\n");
             writer.write("</style>\n</head>\n<body>\n");
 
-            // Encabezado del Ticket
             writer.write("<div class='ticket'>\n");
             writer.write("  <h2 class='center bold' style='margin-bottom: 5px;'>" + nombreIglesia + "</h2>\n");
             writer.write("  <p class='center' style='margin-top: 0; font-size: 12px;'>RUC: 00000000000<br>" + direccionIglesia + "</p>\n");
             writer.write("  <div class='divider'></div>\n");
 
-            // Datos de la Transacción
             writer.write("  <p class='bold center' style='margin: 10px 0;'>COMPROBANTE DE APORTE</p>\n");
-            writer.write("  <div class='flex'><span>Nro. Operación:</span> <span class='bold'>" + codigoDeposito + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Nro. Operacion:</span> <span class='bold'>" + codigoDeposito + "</span></div>\n");
             writer.write("  <div class='flex'><span>Fecha:</span> <span>" + fecha + "</span></div>\n");
             writer.write("  <div class='flex'><span>DNI:</span> <span>" + dniAportante + "</span></div>\n");
             writer.write("  <div class='flex'><span>Aportante:</span> <span class='bold'>" + nombrePersona + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
 
-            // Desglose de importes (Agregado el formato de dos decimales .2f)
             writer.write("  <p class='bold' style='font-size: 14px; margin: 5px 0;'>DETALLE</p>\n");
             writer.write("  <div class='flex'><span>Diezmo</span> <span>S/. " + String.format("%.2f", diezmo) + "</span></div>\n");
-            writer.write("  <div class='flex'><span>Ofrenda</span> <span>S/. " + String.format("%.2f", ofrenda) + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Ofrenda Sistematica</span> <span>S/. " + String.format("%.2f", ofrendaSistem) + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Proyecto Local</span> <span>S/. " + String.format("%.2f", proyectoLocal) + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Pagos a Instituciones</span> <span>S/. " + String.format("%.2f", pagoInstitucion) + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
 
-            // Total a pagar
             writer.write("  <div class='flex bold' style='font-size: 15px;'><span>TOTAL GENERAL:</span> <span>S/. " + String.format("%.2f", totalCalculado) + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
 
-            // Mensaje de cierre
-            writer.write("  <p class='center bold' style='margin-top: 15px; font-size: 12px;'>¡Que Dios bendiga su generosidad!</p>\n");
+            writer.write("  <p class='center bold' style='margin-top: 15px; font-size: 12px;'>Que Dios bendiga su generosidad!</p>\n");
             writer.write("</div>\n");
 
             writer.write("</body>\n</html>");
 
         } catch (IOException e) {
-            System.err.println("Error crítico al estructurar el recibo HTML: " + e.getMessage());
+            System.err.println("Error critico al estructurar el recibo HTML: " + e.getMessage());
         }
     }
 
@@ -135,7 +129,7 @@ public class Recibo {
             ProcessBuilder pb;
 
             if (os.contains("win")) {
-                pb = new ProcessBuilder("cmd.exe", "/c", "start", '\"' + "Recibo" + '\"', archivoHtml.getAbsolutePath());
+                pb = new ProcessBuilder("cmd.exe", "/c", "start", '"' + "Recibo" + '"', archivoHtml.getAbsolutePath());
             } else if (os.contains("mac")) {
                 pb = new ProcessBuilder("open", archivoHtml.getAbsolutePath());
             } else {
