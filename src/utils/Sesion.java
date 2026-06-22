@@ -1,77 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package utils;
 
-import repository.Personas;
-import repository.Usuarios;
+import repository.Credenciales;
 
 /**
- *
- * @author alum.l4
+ * Manejo de sesiones del sistema.
+ * Un solo login: email + contraseña → se resuelve el DNI del miembro.
  */
 public class Sesion {
 
     private static String email = "";
-    private static String dni = "";
+    private static String dniMiembro = "";
 
-    public static boolean haAuthUsuario() {
+    public static boolean haAuth() {
         return !email.isEmpty();
     }
 
-    public static boolean haAuthPersona() {
-        return !dni.isEmpty();
-    }
-
     public static boolean authUsuario(String email, String contrasenia) {
-        if (haAuthUsuario()) {
+        if (haAuth()) {
             return true;
         }
 
-        if (!Usuarios.auth(email, contrasenia)) {
+        int indice = Credenciales.indiceSiAuth(email, contrasenia);
+        if (indice == -1) {
             return false;
         }
 
         Sesion.email = email;
+        Sesion.dniMiembro = Credenciales.verDniMiembro(indice);
         return true;
     }
 
-    public static boolean authPersona(String dni) {
-        if (haAuthPersona()) {
-            return true;
-        }
-
-        if (Personas.buscarPersona(dni) == -1) {
-            return false;
-        }
-
-        Sesion.dni = dni;
-        return true;
-    }
-
-    public static void salirUsuario() {
-        if (!haAuthUsuario()) {
+    public static void salir() {
+        if (!haAuth()) {
             return;
         }
 
         Sesion.email = "";
-    }
-
-    public static void salirPersona() {
-        if (!haAuthPersona()) {
-            return;
-        }
-
-        Sesion.dni = "";
+        Sesion.dniMiembro = "";
     }
 
     public static String verEmail() {
         return email;
     }
 
-    public static String verDNI() {
-        return dni;
+    public static String verDniMiembro() {
+        return dniMiembro;
     }
-
 }

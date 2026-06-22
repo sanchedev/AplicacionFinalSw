@@ -76,6 +76,50 @@ public class Lector {
         } while (true);
     }
 
+    public static double preguntarDoublePositivo(String pregunta) {
+        double valor;
+        do {
+            valor = preguntarDecimal(pregunta);
+            if (valor > 0) {
+                return valor;
+            }
+            Errores.personalizado("El monto debe ser mayor a 0");
+        } while (true);
+    }
+
+    public static double preguntarDoublePositivo(String pregunta, double porDefecto) {
+        double valor;
+        do {
+            valor = preguntarDouble(pregunta, porDefecto);
+            if (valor > 0) {
+                return valor;
+            }
+            Errores.personalizado("El monto debe ser mayor a 0");
+        } while (true);
+    }
+
+    public static String preguntarValidado(String pregunta, String patron, String mensajeError) {
+        String respuesta;
+        do {
+            respuesta = preguntar(pregunta);
+            if (respuesta.matches(patron)) {
+                return respuesta;
+            }
+            Errores.personalizado(mensajeError);
+        } while (true);
+    }
+
+    public static String preguntarValidado(String pregunta, String patron, String mensajeError, String porDefecto) {
+        String respuesta;
+        do {
+            respuesta = preguntar(pregunta, porDefecto);
+            if (respuesta.matches(patron)) {
+                return respuesta;
+            }
+            Errores.personalizado(mensajeError);
+        } while (true);
+    }
+
     public static boolean confirmar(String pregunta) {
         System.out.print(pregunta + " (S/N): ");
         return sc.nextLine().trim().toLowerCase().startsWith("s");
