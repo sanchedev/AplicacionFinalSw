@@ -1,0 +1,73 @@
+ant -f /home/sanchedev/NetBeansProjects/AplicacionFinalSw -Dnb.internal.action.name=run run
+init:
+Deleting: /home/sanchedev/NetBeansProjects/AplicacionFinalSw/build/built-jar.properties
+deps-jar:
+Updating property file: /home/sanchedev/NetBeansProjects/AplicacionFinalSw/build/built-jar.properties
+compile:
+run:
+*** SISTEMA DE TESORERIA IASD ***
+1. Iniciar Sesion
+2. Salir
+Elige una opcion [1-2]: 1
+
+*** INICIAR SESION ***
+Email: admin@iasd.com
+Contrasenia: admin123
+
+*** SISTEMA DE TESORERIA IASD ***
+1. Miembros (0)
+2. Iglesia (3)
+3. Informes (1)
+4. Gastos (1)
+5. Cerrar Sesion
+6. Volver
+Elige una opcion [1-6]: 1
+
+
+*** GESTION DE MIEMBROS *** (0 miembro(s))
+1. Ver Todos los Miembros
+2. Registrar Miembro
+3. Ver Miembro
+4. Editar Miembro
+5. Asignar Rol a Miembro
+6. Retirar Rol a Miembro
+7. Ver Miembros por Departamento
+8. Volver
+Elige una opcion [1-8]: 1
+
+*** LISTAR MIEMBROS ***
+!> La lista de miembros esta vacia
+
+*** GESTION DE MIEMBROS *** (0 miembro(s))
+1. Ver Todos los Miembros
+2. Registrar Miembro
+3. Ver Miembro
+4. Editar Miembro
+5. Asignar Rol a Miembro
+6. Retirar Rol a Miembro
+7. Ver Miembros por Departamento
+8. Volver
+Elige una opcion [1-8]: 8
+
+Buena suerte!
+
+
+*** SISTEMA DE TESORERIA IASD ***
+1. Miembros (0)
+2. Iglesia (3)
+3. Informes (1)
+4. Gastos (1)
+5. Cerrar Sesion
+6. Volver
+Elige una opcion [1-6]: 6
+
+Buena suerte!
+
+
+*** SISTEMA DE TESORERIA IASD ***
+1. Iniciar Sesion
+2. Salir
+Elige una opcion [1-2]: 2
+
+Buena suerte!
+BUILD SUCCESSFUL (total time: 28 seconds)
