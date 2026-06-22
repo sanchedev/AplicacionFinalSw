@@ -46,18 +46,25 @@ public class Iglesias {
         archivo.leer();
 
         for (int i = 0; i < archivo.verCantidadDatos(); i++) {
-            String codigo = archivo.verDato(archivo.verCabecera(0), i);
             String nombre = archivo.verDato(archivo.verCabecera(1), i);
-            String direccion = archivo.verDato(archivo.verCabecera(2), i);
-            String aforo = archivo.verDato(archivo.verCabecera(3), i);
+            int aforo = Integer.parseInt(archivo.verDato(archivo.verCabecera(3), i));
 
-            codigos[cantidad] = Integer.parseInt(codigo);
+            if (nombre.trim().isEmpty()) {
+                continue;
+            }
+            if (aforo <= 0) {
+                continue;
+            }
+
+            codigos[cantidad] = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
             nombres[cantidad] = nombre;
-            direcciones[cantidad] = direccion;
-            aforos[cantidad] = Integer.parseInt(aforo);
+            direcciones[cantidad] = archivo.verDato(archivo.verCabecera(2), i);
+            aforos[cantidad] = aforo;
 
             cantidad++;
         }
+
+        guardarIglesias();
     }
 
     /**
@@ -186,11 +193,14 @@ public class Iglesias {
 
         cantidad--;
 
-        int[] feligreses = Personas.buscarPorIglesia(codigo);
-        for (int i = 0; i < feligreses.length; i++) {
-            Personas.editarPersona(
-                    Personas.verDNI(feligreses[i]),
-                    Personas.verNombre(feligreses[i]),
+        int[] miembros = Miembros.buscarPorIglesia(codigo);
+        for (int i = 0; i < miembros.length; i++) {
+            Miembros.editarMiembro(
+                    Miembros.verDNI(miembros[i]),
+                    Miembros.verNombre(miembros[i]),
+                    Miembros.verFechaNacimiento(miembros[i]),
+                    Miembros.verCorreo(miembros[i]),
+                    Miembros.verTelefono(miembros[i]),
                     -1
             );
         }

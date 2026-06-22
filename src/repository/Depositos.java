@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package repository;
 
 import java.time.LocalDate;
@@ -10,8 +6,9 @@ import utils.Archivo;
 import utils.Recibo;
 
 /**
- *
- * @author sanchedev
+ * Repositorio de depositos financieros de la iglesia.
+ * Cada deposito registra 4 tipos de monto: diezmo, ofrenda sistematica,
+ * proyecto local y pagos a instituciones.
  */
 public class Depositos {
 
@@ -21,7 +18,9 @@ public class Depositos {
     private static final int[] codigoIglesias = new int[LONGITUD_MAXIMA];
     private static final String[] fechas = new String[LONGITUD_MAXIMA];
     private static final double[] diezmos = new double[LONGITUD_MAXIMA];
-    private static final double[] ofrendas = new double[LONGITUD_MAXIMA];
+    private static final double[] ofrendasSistematicas = new double[LONGITUD_MAXIMA];
+    private static final double[] proyectosLocales = new double[LONGITUD_MAXIMA];
+    private static final double[] pagosInstituciones = new double[LONGITUD_MAXIMA];
     private static int cantidad = 0;
 
     private static Archivo genArchivo() {
@@ -31,7 +30,9 @@ public class Depositos {
         archivo.agregarCabecera("codigoIglesias");
         archivo.agregarCabecera("fechas");
         archivo.agregarCabecera("diezmos");
-        archivo.agregarCabecera("ofrendas");
+        archivo.agregarCabecera("ofrendasSistematicas");
+        archivo.agregarCabecera("proyectosLocales");
+        archivo.agregarCabecera("pagosInstituciones");
         return archivo;
     }
 
@@ -44,7 +45,9 @@ public class Depositos {
             archivo.agregarDatos(archivo.verCabecera(2), codigoIglesias[i] + "");
             archivo.agregarDatos(archivo.verCabecera(3), fechas[i]);
             archivo.agregarDatos(archivo.verCabecera(4), diezmos[i] + "");
-            archivo.agregarDatos(archivo.verCabecera(5), ofrendas[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(5), ofrendasSistematicas[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(6), proyectosLocales[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(7), pagosInstituciones[i] + "");
         }
 
         archivo.guardar();
@@ -55,31 +58,35 @@ public class Depositos {
         archivo.leer();
 
         for (int i = 0; i < archivo.verCantidadDatos(); i++) {
-            String codigo = archivo.verDato(archivo.verCabecera(0), i);
-            String dni = archivo.verDato(archivo.verCabecera(1), i);
-            String codigoIglesia = archivo.verDato(archivo.verCabecera(2), i);
-            String fecha = archivo.verDato(archivo.verCabecera(3), i);
-            String diezmo = archivo.verDato(archivo.verCabecera(4), i);
-            String ofrenda = archivo.verDato(archivo.verCabecera(5), i);
+            int codigoIgls = Integer.parseInt(archivo.verDato(archivo.verCabecera(2), i));
+            double diezmo = Double.parseDouble(archivo.verDato(archivo.verCabecera(4), i));
+            double ofrendaSist = Double.parseDouble(archivo.verDato(archivo.verCabecera(5), i));
+            double proyectoLoc = Double.parseDouble(archivo.verDato(archivo.verCabecera(6), i));
+            double pagoInst = Double.parseDouble(archivo.verDato(archivo.verCabecera(7), i));
+            double total = diezmo + ofrendaSist + proyectoLoc + pagoInst;
 
-            codigos[cantidad] = Integer.parseInt(codigo);
-            dnis[cantidad] = dni;
-            codigoIglesias[cantidad] = Integer.parseInt(codigoIglesia);
-            fechas[cantidad] = fecha;
-            diezmos[cantidad] = Double.parseDouble(diezmo);
-            ofrendas[cantidad] = Double.parseDouble(ofrenda);
+            if (total <= 0) {
+                continue;
+            }
+            if (Iglesias.buscarIglesia(codigoIgls) == -1) {
+                continue;
+            }
+
+            codigos[cantidad] = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
+            dnis[cantidad] = archivo.verDato(archivo.verCabecera(1), i);
+            codigoIglesias[cantidad] = codigoIgls;
+            fechas[cantidad] = archivo.verDato(archivo.verCabecera(3), i);
+            diezmos[cantidad] = diezmo;
+            ofrendasSistematicas[cantidad] = ofrendaSist;
+            proyectosLocales[cantidad] = proyectoLoc;
+            pagosInstituciones[cantidad] = pagoInst;
 
             cantidad++;
         }
+
+        guardarDepositos();
     }
 
-    /**
-     * Busca un depósito en el sistema utilizando su código numérico único.
-     *
-     * @param codigo El codigo de identificacion numerico que se desea buscar.
-     * @return El indice (posicion) en el arreglo {@code codigos} si se
-     * encuentra; {@code -1} en caso de que el codigo no este registrado.
-     */
     public static int buscarDeposito(int codigo) {
         int indice = -1;
         for (int i = 0; i < cantidad; i++) {
@@ -91,15 +98,6 @@ public class Depositos {
         return indice;
     }
 
-    /**
-     * Realiza una búsqueda de depósitos asociados a un miembro mediante su DNI.
-     *
-     * @param dni El Documento Nacional de Identidad del usuario para filtrar
-     * los depósitos.
-     * @return Un array de enteros que contiene los índices de todos los
-     * depósitos que coincidieron con el DNI. Si no hay coincidencias, devuelve
-     * un array vacío (longitud 0).
-     */
     public static int[] buscarDepositosPorDni(String dni) {
         int[] indices = new int[cantidad];
         int cantidadDeEncontrados = 0;
@@ -119,15 +117,6 @@ public class Depositos {
         return encontrados;
     }
 
-    /**
-     * Realiza una búsqueda de depósitos asociados a una iglesia mediante su
-     * codigo.
-     *
-     * @param codigo El codigo de iglesia para filtrar los depósitos.
-     * @return Un array de enteros que contiene los índices de todos los
-     * depósitos que coincidieron con la iglesia. Si no hay coincidencias,
-     * devuelve un array vacío (longitud 0).
-     */
     public static int[] buscarDepositoPorIglesia(int codigo) {
         int[] indices = new int[cantidad];
         int cantidadDeEncontrados = 0;
@@ -147,19 +136,8 @@ public class Depositos {
         return encontrados;
     }
 
-    /**
-     * Inserta un nuevo depósito al final de los arreglos del repositorio.
-     * Valida que no exceda el límite del almacenamiento y que el código no esté
-     * duplicado.
-     *
-     * @param dni DNI del miembro que realiza el depósito o vacio si es anonimo.
-     * @param iglesia Iglesia al que se le depositara el monto.
-     * @param diezmo Monto del diezmo.
-     * @param ofrenda Monto de la ofrenda.
-     * @return (-1) si no pudo crear el deposito e (indice del deposito) si pudo
-     * crearlo.
-     */
-    public static int crearDeposito(String dni, int iglesia, double diezmo, double ofrenda) {
+    public static int crearDeposito(String dni, int iglesia, double diezmo,
+            double ofrendaSistem, double proyectoLocal, double pagoInstitucion) {
         if (cantidad >= LONGITUD_MAXIMA) {
             return -1;
         }
@@ -178,7 +156,9 @@ public class Depositos {
         codigoIglesias[cantidad] = iglesia;
         fechas[cantidad] = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         diezmos[cantidad] = diezmo;
-        ofrendas[cantidad] = ofrenda;
+        ofrendasSistematicas[cantidad] = ofrendaSistem;
+        proyectosLocales[cantidad] = proyectoLocal;
+        pagosInstituciones[cantidad] = pagoInstitucion;
 
         cantidad++;
         guardarDepositos();
@@ -191,131 +171,95 @@ public class Depositos {
         recibo.abrir();
     }
 
-    /**
-     * Obtiene el codigo de un depósito en un índice dado.
-     *
-     * @param indice El indice del depósito
-     * @return El código del deposito.
-     */
     public static int verCodigo(int indice) {
         return codigos[indice];
     }
 
-    /**
-     * Obtiene el dni del que hizo un depósito en un índice dado.
-     *
-     * @param indice El indice del depósito
-     * @return El dni del hacedor del deposito.
-     */
     public static String verDNI(int indice) {
         return dnis[indice];
     }
 
-    /**
-     * Obtiene el codigo de iglesia de un depósito en un índice dado.
-     *
-     * @param indice El indice del depósito
-     * @return El codigo de iglesia del deposito.
-     */
     public static int verCodigoIglesia(int indice) {
         return codigoIglesias[indice];
     }
 
-    /**
-     * Obtiene la fecha de un depósito en un índice dado.
-     *
-     * @param indice El indice del depósito
-     * @return La fecha del deposito.
-     */
     public static String verFecha(int indice) {
         return fechas[indice];
     }
 
-    /**
-     * Obtiene el diezmo de un depósito en un índice dado.
-     *
-     * @param indice El indice del depósito
-     * @return El diezmo del deposito.
-     */
     public static double verDiezmo(int indice) {
         return diezmos[indice];
     }
 
-    /**
-     * Obtiene la ofrenda de un depósito en un índice dado.
-     *
-     * @param indice El indice del depósito
-     * @return La ofrenda del deposito.
-     */
-    public static double verOfrenda(int indice) {
-        return ofrendas[indice];
+    public static double verOfrendaSistemtica(int indice) {
+        return ofrendasSistematicas[indice];
     }
 
-    /**
-     * Obtiene la cantidad actual de depósitos almacenados.
-     *
-     * @return El número de depósitos actualmente.
-     */
+    public static double verProyectoLocal(int indice) {
+        return proyectosLocales[indice];
+    }
+
+    public static double verPagoInstitucion(int indice) {
+        return pagosInstituciones[indice];
+    }
+
     public static int verCantidad() {
         return cantidad;
     }
 
-    /**
-     * Imprime en la consola la información básica de un depósito (Código, DNI y
-     * Fecha) por su posición en el arreglo.
-     *
-     * @param indice Posición del depósito dentro de los arreglos.
-     */
     public static void mostrarDeposito(int indice) {
         if (indice < 0 || indice >= cantidad) {
             return;
         }
 
-        System.out.println("Código Depósito: " + codigos[indice]);
+        System.out.println("Codigo Deposito: " + codigos[indice]);
         System.out.println("DNI Miembro: " + dnis[indice]);
         System.out.println("Codigo de Iglesia: " + codigoIglesias[indice]);
         System.out.println("Fecha: " + fechas[indice]);
-        System.out.println("Monto Diezmo: S/. " + String.format("%.2f", diezmos[indice]));
-        System.out.println("Monto Ofrenda: S/. " + String.format("%.2f", ofrendas[indice]));
+        System.out.println("Diezmo:           S/. " + String.format("%.2f", diezmos[indice]));
+        System.out.println("Ofrenda Sistematica: S/. " + String.format("%.2f", ofrendasSistematicas[indice]));
+        System.out.println("Proyecto Local:      S/. " + String.format("%.2f", proyectosLocales[indice]));
+        System.out.println("Pago Instituciones:  S/. " + String.format("%.2f", pagosInstituciones[indice]));
+        System.out.println("Total:               S/. " + String.format("%.2f", verTotal(indice)));
     }
 
-    /**
-     * Imprime en la consola la información detallada y económica del depósito.
-     *
-     * @param indice Posición del depósito dentro de los arreglos.
-     */
     public static void mostrarDetalleDeposito(int indice) {
         if (indice < 0 || indice >= cantidad) {
             return;
         }
 
-        int indicePersona = Iglesias.buscarIglesia(codigoIglesias[indice]);
+        int indicePersona = Miembros.buscarMiembro(dnis[indice]);
         int indiceIglesia = Iglesias.buscarIglesia(codigoIglesias[indice]);
 
-        System.out.println("Código Depósito: " + codigos[indice]);
+        System.out.println("Codigo Deposito: " + codigos[indice]);
         System.out.println("Miembro: " + dnis[indice]);
         if (indicePersona == -1) {
             System.out.println(" - Anonimo");
         } else {
-            System.out.println("- DNI: " + Personas.verDNI(indice));
-            System.out.println("- Nombre: " + Personas.verNombre(indice));
+            System.out.println("- DNI: " + Miembros.verDNI(indicePersona));
+            System.out.println("- Nombre: " + Miembros.verNombre(indicePersona));
         }
         System.out.println("Iglesia: " + codigoIglesias[indice]);
         if (indiceIglesia == -1) {
             System.out.println(" - Iglesia no existente");
         } else {
-            System.out.println("- Codigo: " + Iglesias.verCodigo(indice));
-            System.out.println("- Nombre: " + Iglesias.verNombre(indice));
-            System.out.println("- Direccion: " + Iglesias.verDireccion(indice));
+            System.out.println("- Codigo: " + Iglesias.verCodigo(indiceIglesia));
+            System.out.println("- Nombre: " + Iglesias.verNombre(indiceIglesia));
+            System.out.println("- Direccion: " + Iglesias.verDireccion(indiceIglesia));
         }
         System.out.println("Fecha: " + fechas[indice]);
-        System.out.println("Monto Diezmo: S/. " + String.format("%.2f", diezmos[indice]));
-        System.out.println("Monto Ofrenda: S/. " + String.format("%.2f", ofrendas[indice]));
+        System.out.println("Diezmo:              S/. " + String.format("%.2f", diezmos[indice]));
+        System.out.println("Ofrenda Sistematica: S/. " + String.format("%.2f", ofrendasSistematicas[indice]));
+        System.out.println("Proyecto Local:      S/. " + String.format("%.2f", proyectosLocales[indice]));
+        System.out.println("Pago Instituciones:  S/. " + String.format("%.2f", pagosInstituciones[indice]));
+        System.out.println("Total:               S/. " + String.format("%.2f", verTotal(indice)));
     }
 
-    /**
-     * Carga los datos necesarios para el correcto funcionamiento de esta clase.
-     */
+    public static double verTotal(int indice) {
+        return diezmos[indice] + ofrendasSistematicas[indice]
+                + proyectosLocales[indice] + pagosInstituciones[indice];
+    }
+
     public static void cargar() {
         cargarDepositos();
     }

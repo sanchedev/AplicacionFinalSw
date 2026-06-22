@@ -128,7 +128,7 @@ public class Archivo {
             Files.createDirectories(path.getParent());
             BufferedReader bf = new BufferedReader(new FileReader(path.toFile()));
             String linea = bf.readLine();
-            String[] encabezadosLeidos = linea.split(";");
+            String[] encabezadosLeidos = linea.split(";", -1);
 
             if (verCantidadCabeceras() != encabezadosLeidos.length) {
                 return;
@@ -140,7 +140,7 @@ public class Archivo {
                 }
             }
             while ((linea = bf.readLine()) != null) {
-                String[] fila = linea.split(";");
+                String[] fila = linea.split(";", -1);
                 if (encabezadosLeidos.length != fila.length) {
                     break;
                 }
