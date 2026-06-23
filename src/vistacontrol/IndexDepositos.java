@@ -2,6 +2,7 @@ package vistacontrol;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import utils.Archivo;
 
 import utils.Errores;
 import utils.Lector;
@@ -25,7 +26,64 @@ public class IndexDepositos {
     public static final double[] ofrendasProyectoLocal = new double[1000];
     public static final double[] ofrendasInstituciones = new double[1000];
     public static int cantidad = 0;
+    
+    private static Archivo genArchivo() {
+        Archivo archivo = new Archivo("saveds/db/depositos.csv");
+        archivo.agregarCabecera("codigos");
+        archivo.agregarCabecera("dnis");
+        archivo.agregarCabecera("fechas");
+        archivo.agregarCabecera("codigoIglesias");
+        archivo.agregarCabecera("diezmos");
+        archivo.agregarCabecera("ofrendasSistemicas");
+        archivo.agregarCabecera("ofrendasProyectoLocal");
+        archivo.agregarCabecera("ofrendasInstituciones");
+        return archivo;
+    }
 
+    private static void guardarDepositos() {
+        Archivo archivo = genArchivo();
+        for (int i = 0; i < cantidad; i++) {
+            archivo.agregarDatos(archivo.verCabecera(0), codigos[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(1), dnis[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(2), fechas[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(3), codigoIglesias[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(4), diezmos[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(5), ofrendasSistemicas[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(6), ofrendasProyectoLocal[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(7), ofrendasInstituciones[i] + "");
+        }
+        archivo.guardar();
+    }
+
+    private static void cargarDepositos() {
+        Archivo archivo = genArchivo();
+        archivo.leer();
+        for (int i = 0; i < archivo.verCantidadDatos(); i++) {
+            String dni = archivo.verDato(archivo.verCabecera(1), i);
+            int codigoIgls = Integer.parseInt(archivo.verDato(archivo.verCabecera(3), i));
+            if (IndexMiembros.buscarPorDNI(dni) == -1) {
+                continue;
+            }
+            if (IndexIglesias.buscarPorCodigo(codigoIgls) == -1) {
+                continue;
+            }
+            codigos[cantidad] = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
+            dnis[cantidad] = dni;
+            fechas[cantidad] = archivo.verDato(archivo.verCabecera(2), i);
+            codigoIglesias[cantidad] = codigoIgls;
+            diezmos[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(4), i));
+            ofrendasSistemicas[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(5), i));
+            ofrendasProyectoLocal[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(6), i));
+            ofrendasInstituciones[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(7), i));
+            cantidad++;
+        }
+        guardarDepositos();
+    }
+
+    public static void cargar() {
+        cargarDepositos();
+    }
+    
     public static int buscarPorCodigo(int codigo) {
         int indice = -1;
         for (int i = 0; i < cantidad; i++) {
@@ -51,6 +109,7 @@ public class IndexDepositos {
         String dni = Lector.preguntar("DNI");
         if (IndexMiembros.buscarPorDNI(dni) == -1) {
             Errores.personalizado("El Miembro con ese DNI no existe");
+            return;
         }
         String fecha = Lector.preguntar("Fecha", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
         if (!Validaciones.esFechaValida(fecha)) {
@@ -97,6 +156,7 @@ public class IndexDepositos {
         ofrendasProyectoLocal[cantidad] = pacto;
         ofrendasInstituciones[cantidad] = instituciones;
         cantidad++;
+        guardarDepositos();
         System.out.println("Deposito registro exitosamente");
         Recibo recibo = new Recibo(cantidad - 1);
         recibo.abrir();

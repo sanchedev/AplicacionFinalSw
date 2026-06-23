@@ -17,7 +17,7 @@ public class IndexIglesias {
     public static int cantidad = 0;
     
     private static Archivo genArchivo() {
-        Archivo archivo = new Archivo("saveds/db/miembros.csv");
+        Archivo archivo = new Archivo("saveds/db/iglesias.csv");
         archivo.agregarCabecera("codigos");
         archivo.agregarCabecera("nombres");
         archivo.agregarCabecera("direcciones");
@@ -31,7 +31,7 @@ public class IndexIglesias {
             archivo.agregarDatos(archivo.verCabecera(0), codigos[i] + "");
             archivo.agregarDatos(archivo.verCabecera(1), nombres[i]);
             archivo.agregarDatos(archivo.verCabecera(2), direcciones[i]);
-            archivo.agregarDatos(archivo.verCabecera(2), aforos[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(3), aforos[i] + "");
         }
         archivo.guardar();
     }

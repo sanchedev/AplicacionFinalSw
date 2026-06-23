@@ -25,7 +25,7 @@ public class Index {
     public static void inicio() {
         IndexIglesias.cargar();
         IndexMiembros.cargar();
-        // IndexDepositos.cargar();
+        IndexDepositos.cargar();
 
         int opcion;
         do {
