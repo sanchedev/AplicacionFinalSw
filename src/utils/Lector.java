@@ -5,6 +5,7 @@ import java.util.Scanner;
 /**
  *
  * @author sanchedev
+ * @author plasencia
  */
 public class Lector {
 

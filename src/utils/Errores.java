@@ -1,7 +1,7 @@
 package utils;
 
 /**
- * Mensajes de error centralizados.
+ * @author plasencia
  */
 public class Errores {
 
