@@ -1,5 +1,6 @@
 package vistacontrol;
 
+import utils.Archivo;
 import utils.Errores;
 import utils.Lector;
 import utils.Validaciones;
@@ -14,6 +15,49 @@ public class IndexMiembros {
     private static final int[] codigoIglesias = new int[1000];
     public static int cantidad = 0;
 
+    private static Archivo genArchivo() {
+        Archivo archivo = new Archivo("saveds/db/miembros.csv");
+        archivo.agregarCabecera("dnis");
+        archivo.agregarCabecera("nombresCompletos");
+        archivo.agregarCabecera("codigoIglesias");
+        return archivo;
+    }
+
+    private static void guardarMiembros() {
+        Archivo archivo = genArchivo();
+        for (int i = 0; i < cantidad; i++) {
+            archivo.agregarDatos(archivo.verCabecera(0), dnis[i]);
+            archivo.agregarDatos(archivo.verCabecera(1), nombresCompletos[i]);
+            archivo.agregarDatos(archivo.verCabecera(2), codigoIglesias[i] + "");
+        }
+        archivo.guardar();
+    }
+
+    private static void cargarMiembros() {
+        Archivo archivo = genArchivo();
+        archivo.leer();
+        for (int i = 0; i < archivo.verCantidadDatos(); i++) {
+            String dni = archivo.verDato(archivo.verCabecera(0), i);
+            String nombre = archivo.verDato(archivo.verCabecera(1), i);
+            int codigoIgls = Integer.parseInt(archivo.verDato(archivo.verCabecera(2), i));
+            if (!Validaciones.esDNIValido(dni)) {
+                continue;
+            }
+            if (codigoIgls != -1 && IndexIglesias.buscarPorCodigo(codigoIgls) == -1) {
+                continue;
+            }
+            dnis[cantidad] = dni;
+            nombresCompletos[cantidad] = nombre;
+            codigoIglesias[cantidad] = codigoIgls;
+            cantidad++;
+        }
+        guardarMiembros();
+    }
+    
+    public static void cargar() {
+        cargarMiembros();
+    }
+    
     public static int buscarPorDNI(String dni) {
         int indice = -1;
         for (int i = 0; i < cantidad; i++) {
@@ -27,8 +71,9 @@ public class IndexMiembros {
 
     public static String verNombre(String dni) {
         int indice = buscarPorDNI(dni);
-        if (indice == -1)
+        if (indice == -1) {
             return "";
+        }
         return nombresCompletos[indice];
     }
 
@@ -57,6 +102,7 @@ public class IndexMiembros {
         nombresCompletos[cantidad] = nombre;
         codigoIglesias[cantidad] = codigoIglesia;
         cantidad++;
+        guardarMiembros();
         System.out.println("Miembro agregado con exito!");
 
     }
@@ -69,12 +115,17 @@ public class IndexMiembros {
             Errores.personalizado("El Miembro con ese DNI no existe");
             return;
         }
+        if (Lector.confirmar("Desea eliminar el miembro " + nombresCompletos[indice] + "?")) {
+            return;
+        }
         cantidad--;
         for (int i = indice; i < cantidad; i++) {
             dnis[i] = dnis[i + 1];
             nombresCompletos[i] = nombresCompletos[i + 1];
             codigoIglesias[i] = codigoIglesias[i + 1];
         }
+        guardarMiembros();
+        System.out.println("Miembro eliminado con exito!");
     }
 
     private static void editar() {
@@ -94,6 +145,7 @@ public class IndexMiembros {
         }
         nombresCompletos[indice] = nombre;
         codigoIglesias[indice] = codigo;
+        guardarMiembros();
         System.out.println("Miembro editado con Exito");
 
     }

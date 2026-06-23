@@ -94,7 +94,7 @@ public class Exportador {
         try (FileWriter writer = new FileWriter(archivo)) {
             for (int i = 0; i < encabezados.length; i++) {
                 if (i != 0) {
-                    writer.write(",");
+                    writer.write(";");
                 }
                 writer.write(encabezados[i]);
             }
@@ -103,10 +103,10 @@ public class Exportador {
             for (int i = 0; i < datos.length; i++) {
                 for (int j = 0; j < datos[i].length; j++) {
                     if (j != 0) {
-                        writer.write(",");
+                        writer.write(";");
                     }
                     String valor = datos[i][j] != null ? datos[i][j] : "";
-                    if (valor.contains(",") || valor.contains("\"") || valor.contains("\n")) {
+                    if (valor.contains(";") || valor.contains("\"") || valor.contains("\n")) {
                         valor = "\"" + valor.replace("\"", "\"\"") + "\"";
                     }
                     writer.write(valor);

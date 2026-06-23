@@ -23,8 +23,8 @@ public class Index {
     }
 
     public static void inicio() {
-        // IndexIglesias.cargar();
-        // IndexMiembros.cargar();
+        IndexIglesias.cargar();
+        IndexMiembros.cargar();
         // IndexDepositos.cargar();
 
         int opcion;

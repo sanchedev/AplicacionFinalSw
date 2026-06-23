@@ -74,19 +74,19 @@ public class IndexInformes {
         int opcion;
         do {
             mostrarMenu();
-            opcion = Lector.preguntarEntero("Elige una opcion [1-8]");
+            opcion = Lector.preguntarEntero("Elige una opcion [1-3]");
             System.out.println("");
 
             switch (opcion) {
                 case 1 ->
-                    iglesia();
-                case 2 ->
                     miembro();
+                case 2 ->
+                    iglesia();
                 case 3 ->
                     volver();
                 default ->
                     Errores.deRango();
             }
-        } while (opcion != 8);
+        } while (opcion != 3);
     }
 }

@@ -1,5 +1,6 @@
 package vistacontrol;
 
+import utils.Archivo;
 import utils.Errores;
 import utils.Lector;
 
@@ -14,7 +15,48 @@ public class IndexIglesias {
     private static final String[] direcciones = new String[1000];
     private static final int[] aforos = new int[1000];
     public static int cantidad = 0;
+    
+    private static Archivo genArchivo() {
+        Archivo archivo = new Archivo("saveds/db/miembros.csv");
+        archivo.agregarCabecera("codigos");
+        archivo.agregarCabecera("nombres");
+        archivo.agregarCabecera("direcciones");
+        archivo.agregarCabecera("aforos");
+        return archivo;
+    }
 
+    private static void guardarIglesias() {
+        Archivo archivo = genArchivo();
+        for (int i = 0; i < cantidad; i++) {
+            archivo.agregarDatos(archivo.verCabecera(0), codigos[i] + "");
+            archivo.agregarDatos(archivo.verCabecera(1), nombres[i]);
+            archivo.agregarDatos(archivo.verCabecera(2), direcciones[i]);
+            archivo.agregarDatos(archivo.verCabecera(2), aforos[i] + "");
+        }
+        archivo.guardar();
+    }
+
+    private static void cargarIglesias() {
+        Archivo archivo = genArchivo();
+        archivo.leer();
+        for (int i = 0; i < archivo.verCantidadDatos(); i++) {
+            int codigo = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
+            String nombre = archivo.verDato(archivo.verCabecera(1), i);
+            String direccion = archivo.verDato(archivo.verCabecera(2), i);
+            int aforo = Integer.parseInt(archivo.verDato(archivo.verCabecera(3), i));
+            codigos[cantidad] = codigo;
+            nombres[cantidad] = nombre;
+            direcciones[cantidad] = direccion;
+            aforos[cantidad] = aforo;
+            cantidad++;
+        }
+        guardarIglesias();
+    }
+    
+    public static void cargar() {
+        cargarIglesias();
+    }
+    
     public static String verNombre(int codigo) {
         int indice = buscarPorCodigo(codigo);
         if (indice == -1) {
