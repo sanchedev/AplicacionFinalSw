@@ -11,6 +11,10 @@ public class IndexInformes {
 
     private static void miembro() {
         System.out.println("*** Informe por Miembro ***");
+        if (IndexMiembros.cantidad == 0) {
+            Errores.personalizado("No hay Miembros registrados");
+            return;
+        }
         String dni = Lector.preguntar("DNI");
         int indiceMiembro = IndexMiembros.buscarPorDNI(dni);
         if (indiceMiembro == -1) {
@@ -31,6 +35,10 @@ public class IndexInformes {
 
     private static void iglesia() {
         System.out.println("*** Informe por Iglesia ***");
+        if (IndexIglesias.cantidad == 0) {
+            Errores.personalizado("No hay Iglesias registradas");
+            return;
+        }
         IndexIglesias.verIglesias();
         int codigoIglesia = Lector.preguntarEntero("Codigo de Iglesia");
         int indice = IndexIglesias.buscarPorCodigo(codigoIglesia);

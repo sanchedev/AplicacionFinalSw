@@ -40,6 +40,14 @@ public class IndexDepositos {
   public static void inicio() {
     System.out.println("");
     System.out.println("*** REGISTRAR DEPOSITO ***");
+    if (IndexIglesias.cantidad == 0) {
+      Errores.personalizado("No hay Iglesias registradas");
+      return;
+    }
+    if (IndexMiembros.cantidad == 0) {
+      Errores.personalizado("No hay Miembros registrados");
+      return;
+    }
     String dni = Lector.preguntar("DNI");
     if (IndexMiembros.buscarPorDNI(dni) == -1) {
       Errores.personalizado("El Miembro con ese DNI no existe");

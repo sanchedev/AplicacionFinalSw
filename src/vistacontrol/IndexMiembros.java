@@ -12,7 +12,7 @@ public class IndexMiembros {
     private static final String[] dnis = new String[1000];
     private static final String[] nombresCompletos = new String[1000];
     private static final int[] codigoIglesias = new int[1000];
-    private static int cantidad = 0;
+    public static int cantidad = 0;
 
     public static int buscarPorDNI(String dni) {
         int indice = -1;
@@ -34,6 +34,10 @@ public class IndexMiembros {
 
     private static void agregar() {
         System.out.println("*** Agregar Miembro ***");
+        if (IndexIglesias.cantidad == 0) {
+            Errores.personalizado("No hay Iglesias registradas");
+            return;
+        }
         String dni = Lector.preguntar("DNI");
         if (!Validaciones.esDNIValido(dni)) {
             Errores.personalizado("\"" + dni + "\" no es un DNI valido");

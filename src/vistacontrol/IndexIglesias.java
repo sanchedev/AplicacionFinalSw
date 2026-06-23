@@ -13,7 +13,7 @@ public class IndexIglesias {
     private static final String[] nombres = new String[1000];
     private static final String[] direcciones = new String[1000];
     private static final int[] aforos = new int[1000];
-    private static int cantidad = 0;
+    public static int cantidad = 0;
 
     public static String verNombre(int codigo) {
         int indice = buscarPorCodigo(codigo);
