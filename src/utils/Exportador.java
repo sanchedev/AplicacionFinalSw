@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 
 import vistacontrol.IndexDepositos;
 import vistacontrol.IndexIglesias;
-import vistacontrol.IndexMiembros;
 
 /**
  * @author sanchedev
@@ -16,9 +15,9 @@ import vistacontrol.IndexMiembros;
 public class Exportador {
 
     private static final String CARPETA_REPORTES = "saveds/reportes/";
-    private static final String[] encabezados = { "Codigo", "DNI", "Iglesia", "Fecha", "Diezmo", "Ofrenda Sist.",
-            "Proy. Local",
-            "Pagos Instit.", "Total" };
+    private static final String[] encabezados = {"Codigo", "DNI", "Iglesia", "Fecha", "Diezmo", "Ofrenda Sist.",
+        "Proy. Local",
+        "Pagos Instit.", "Total"};
 
     private static int preguntarFormato() {
         System.out.println("");

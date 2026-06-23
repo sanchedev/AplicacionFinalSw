@@ -32,9 +32,9 @@ public class IndexIglesias {
     }
 
     public static void verIglesias() {
-        if (cantidad == 0)
+        if (cantidad == 0) {
             System.out.println("!> No hay iglesias");
-        else {
+        } else {
             for (int i = 0; i < cantidad; i++) {
                 System.out.println("- [" + i + "]: " + nombres[i]);
             }
@@ -55,8 +55,9 @@ public class IndexIglesias {
     private static void agregar() {
         System.out.println("*** Agregar Iglesia ***");
         int codigo = 0;
-        if (cantidad > 0)
+        if (cantidad > 0) {
             codigo = codigos[cantidad - 1] + 1;
+        }
         codigos[cantidad] = codigo;
         nombres[cantidad] = Lector.preguntar("Nombre de la Iglesia");
         direcciones[cantidad] = Lector.preguntar("Direccion");

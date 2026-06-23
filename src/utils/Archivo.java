@@ -23,7 +23,7 @@ public class Archivo {
     private final String[][] datos = new String[1000][1000];
     private final int[] cantidades = new int[1000];
 
-    private String nombreArchivo;
+    private final String nombreArchivo;
 
     public Archivo(String nombreArchivo) {
         this.nombreArchivo = nombreArchivo;
@@ -126,31 +126,31 @@ public class Archivo {
         Path path = Path.of(nombreArchivo);
         try {
             Files.createDirectories(path.getParent());
-            BufferedReader bf = new BufferedReader(new FileReader(path.toFile()));
-            String linea = bf.readLine();
-            String[] encabezadosLeidos = linea.split(";", -1);
+            try (BufferedReader bf = new BufferedReader(new FileReader(path.toFile()))) {
+                String linea = bf.readLine();
+                String[] encabezadosLeidos = linea.split(";", -1);
 
-            if (verCantidadCabeceras() != encabezadosLeidos.length) {
-                bf.close();
-                return;
-            }
-
-            for (int i = 0; i < encabezadosLeidos.length; i++) {
-                if (!verCabecera(i).equals(encabezadosLeidos[i])) {
+                if (verCantidadCabeceras() != encabezadosLeidos.length) {
                     bf.close();
                     return;
                 }
-            }
-            while ((linea = bf.readLine()) != null) {
-                String[] fila = linea.split(";", -1);
-                if (encabezadosLeidos.length != fila.length) {
-                    break;
+
+                for (int i = 0; i < encabezadosLeidos.length; i++) {
+                    if (!verCabecera(i).equals(encabezadosLeidos[i])) {
+                        bf.close();
+                        return;
+                    }
                 }
-                for (int i = 0; i < fila.length; i++) {
-                    agregarDatos(encabezadosLeidos[i], fila[i]);
+                while ((linea = bf.readLine()) != null) {
+                    String[] fila = linea.split(";", -1);
+                    if (encabezadosLeidos.length != fila.length) {
+                        break;
+                    }
+                    for (int i = 0; i < fila.length; i++) {
+                        agregarDatos(encabezadosLeidos[i], fila[i]);
+                    }
                 }
             }
-            bf.close();
         } catch (IOException e) {
         }
 

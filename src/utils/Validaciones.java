@@ -13,7 +13,7 @@ public class Validaciones {
         if (dni == null) {
             return false;
         }
-        return dni.matches("^\\d{8}$");
+        return dni.matches("^\\d{8}$"); // regex para 8 chars digitos
     }
 
     public static boolean esFechaValida(String fecha) {
