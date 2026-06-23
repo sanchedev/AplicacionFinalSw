@@ -175,7 +175,7 @@ public class IndexMiembros {
         String nombre = Lector.preguntar("Nombre");
         int indice = -1;
         for (int i = 0; i < cantidad; i++) {
-            if (nombresCompletos[i].contains(nombre)) {
+            if (nombresCompletos[i].toLowerCase().contains(nombre.toLowerCase())) {
                 indice = i;
                 break;
             }
