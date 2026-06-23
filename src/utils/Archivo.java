@@ -131,11 +131,13 @@ public class Archivo {
             String[] encabezadosLeidos = linea.split(";", -1);
 
             if (verCantidadCabeceras() != encabezadosLeidos.length) {
+                bf.close();
                 return;
             }
 
             for (int i = 0; i < encabezadosLeidos.length; i++) {
                 if (!verCabecera(i).equals(encabezadosLeidos[i])) {
+                    bf.close();
                     return;
                 }
             }
@@ -148,6 +150,7 @@ public class Archivo {
                     agregarDatos(encabezadosLeidos[i], fila[i]);
                 }
             }
+            bf.close();
         } catch (IOException e) {
         }
 
