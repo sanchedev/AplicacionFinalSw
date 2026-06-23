@@ -16,28 +16,21 @@ El proyecto sigue una estructura limpia separando la interfaz de usuario, los al
 
 ```text
 src/
-├── repository/
-│   ├── Miembros.java        → Modelo unificado de miembros (antes Personas + Usuarios)
-│   ├── Credenciales.java    → Credenciales de acceso y roles del sistema
-│   ├── Depositos.java       → Gestion de ingresos (4 tipos de monto)
-│   ├── Iglesias.java        → Catalogo de iglesias/distritos
-│   └── Gastos.java          → Registro de retiros de dinero por ministerio
 ├── utils/
 │   ├── Archivo.java         → Motor CSV (delimitador punto y coma)
-│   ├── Constantes.java      → Listas estaticas de departamentos y cargos
 │   ├── Validaciones.java    → Validacion de DNI, fecha, correo, telefono, monto
 │   ├── Exportador.java      → Exportacion de reportes a CSV y HTML
 │   ├── Lector.java          → Captura y validacion de datos por consola
 │   ├── Recibo.java          → Generacion de recibos HTML en navegador
-│   ├── Sesion.java          → Controlador de estado de autenticacion
 │   └── Errores.java         → Mensajes de error centralizados
 └── vistacontrol/
     ├── Index.java           → Punto de entrada + login + creacion de admin
-    ├── IndexSistema.java    → Menu principal post-login (con contadores)
+    ├── IndexSistema.java    → Menu principal post-login
+    ├── IndexUsuarios.java   → CRUD de usuarios (nombre, correo, contrasenia)
     ├── IndexMiembros.java   → CRUD miembros + asignacion de roles
-    ├── IndexIglesia.java    → CRUD iglesias
-    ├── IndexInformes.java   → Depositos + resumenes + balance + exportacion
-    └── IndexGastos.java     → Registro de gastos + exportacion
+    ├── IndexIglesias.java   → CRUD iglesias
+    ├── IndexDepositos.java  → Gestion de ingresos (4 tipos de monto)
+    └── IndexInformes.java   → Depositos + resumenes + balance + exportacion
 ```
 
 ## Funcionalidades
@@ -77,6 +70,19 @@ src/
 - **HTML** — reportes estilizados (imprimir a PDF desde el navegador con Ctrl+P)
 - Disponible en: listados de depositos, listados de gastos, resumenes y balance
 
+### Sistema de Login
+- **Menu inicial** con opciones: Iniciar sesion / Salir
+- **Login** con correo y contrasenia (maximo 3 intentos)
+- **Cuenta por defecto** se crea automaticamente si no hay usuarios registrados
+- **Cerrar sesion** desde el menu principal vuelve al menu inicial
+
+### CRUD de Usuarios
+- **Agregar** usuario con nombre, correo y contrasenia
+- **Eliminar** usuario (proteccion: no se puede eliminar la propia cuenta)
+- **Editar** nombre, correo y contrasenia
+- **Listar** todos los usuarios
+- **Buscar** por nombre (coincidencia parcial)
+
 ### Validaciones
 - DNI: 8 digitos numericos
 - Fecha: formato dd-MM-yyyy
@@ -89,16 +95,16 @@ src/
 ### Roles
 | Rol | Permisos |
 |-----|----------|
-| Administrador | Control total: miembros, iglesias, depositos, gastos y reportes |
+| Usuario logueado | Control total: miembros, iglesias, depositos, gastos, reportes y usuarios |
 | Invitado | Registro temporal de depositos sin necesidad de cuenta |
 
 ### Cuenta por defecto
 ```
-Email:       admin@iasd.com
+Correo:       admin@iasd.com
 Contrasena:  admin123
 ```
 
-Se crea automaticamente en la primera ejecucion. Se recomienda eliminarla despues de crear el administrador real.
+Se crea automaticamente en la primera ejecucion cuando no hay usuarios registrados. Se recomienda crear otro usuario y eliminar esta cuenta por defecto.
 
 ## Como ejecutar
 
