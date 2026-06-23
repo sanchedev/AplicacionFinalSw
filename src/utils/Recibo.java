@@ -3,56 +3,46 @@ package utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import repository.Depositos;
-import repository.Iglesias;
-import repository.Miembros;
+
+import vistacontrol.IndexDepositos;
+import vistacontrol.IndexIglesias;
+import vistacontrol.IndexMiembros;
 
 /**
- * Generador de recibos HTML en formato ticketera termica.
+ * @author sanchedev
  */
 public class Recibo {
 
     private File archivoHtml;
     private final int indexDeposito;
 
-    /**
-     * Constructor que inicializa el recibo y genera automaticamente el archivo
-     * HTML.
-     *
-     * @param indexDeposito Posicion del deposito dentro de los arreglos del
-     * repositorio.
-     */
     public Recibo(int indexDeposito) {
         this.indexDeposito = indexDeposito;
         generarArchivo();
     }
 
-    /**
-     * Extrae la informacion de los repositorios estaticos y genera el archivo
-     * HTML con un diseno limpio y profesional de ticketera termica.
-     */
     private void generarArchivo() {
-        int codigoDeposito = Depositos.verCodigo(indexDeposito);
-        String dniAportante = Depositos.verDNI(indexDeposito);
-        int codigoIglesia = Depositos.verCodigoIglesia(indexDeposito);
-        String fecha = Depositos.verFecha(indexDeposito);
-        double diezmo = Depositos.verDiezmo(indexDeposito);
-        double ofrendaSistem = Depositos.verOfrendaSistemtica(indexDeposito);
-        double proyectoLocal = Depositos.verProyectoLocal(indexDeposito);
-        double pagoInstitucion = Depositos.verPagoInstitucion(indexDeposito);
+        int codigoDeposito = IndexDepositos.codigos[indexDeposito];
+        String dniAportante = IndexDepositos.dnis[indexDeposito];
+        int codigoIglesia = IndexDepositos.codigoIglesias[indexDeposito];
+        String fecha = IndexDepositos.fechas[indexDeposito];
+        double diezmo = IndexDepositos.diezmos[indexDeposito];
+        double ofrendaSistem = IndexDepositos.ofrendasSistemicas[indexDeposito];
+        double proyectoLocal = IndexDepositos.ofrendasProyectoLocal[indexDeposito];
+        double pagoInstitucion = IndexDepositos.ofrendasInstituciones[indexDeposito];
 
-        int indicePersona = Miembros.buscarMiembro(dniAportante);
+        int indicePersona = IndexMiembros.buscarPorDNI(dniAportante);
         String nombrePersona = "Visitante / Anonimo";
         if (indicePersona != -1) {
-            nombrePersona = Miembros.verNombre(indicePersona);
+            nombrePersona = IndexMiembros.verNombre(dniAportante);
         }
 
-        int indiceIglesia = Iglesias.buscarIglesia(codigoIglesia);
+        int indiceIglesia = IndexIglesias.buscarPorCodigo(codigoIglesia);
         String nombreIglesia = "IASD 404";
         String direccionIglesia = "No se pudo encontrar la iglesia";
         if (indiceIglesia != -1) {
-            nombreIglesia = Iglesias.verNombre(indiceIglesia);
-            direccionIglesia = Iglesias.verDireccion(indiceIglesia);
+            nombreIglesia = IndexIglesias.verNombre(codigoIglesia);
+            direccionIglesia = IndexIglesias.verDireccion(codigoIglesia);
         }
 
         double totalCalculado = diezmo + ofrendaSistem + proyectoLocal + pagoInstitucion;
@@ -72,37 +62,49 @@ public class Recibo {
             writer.write("<meta charset='UTF-8'>\n");
             writer.write("<title>Recibo de Pago #" + codigoDeposito + "</title>\n");
             writer.write("<style>\n");
-            writer.write("  body { font-family: 'Courier New', Courier, monospace; margin: 20px; background-color: #f0f0f0; display: flex; justify-content: center; }\n");
-            writer.write("  .ticket { max-width: 380px; width: 100%; padding: 20px; border: 1px dashed #777; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); }\n");
+            writer.write(
+                    "  body { font-family: 'Courier New', Courier, monospace; margin: 20px; background-color: #f0f0f0; display: flex; justify-content: center; }\n");
+            writer.write(
+                    "  .ticket { max-width: 380px; width: 100%; padding: 20px; border: 1px dashed #777; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); }\n");
             writer.write("  .center { text-align: center; }\n");
             writer.write("  .bold { font-weight: bold; }\n");
-            writer.write("  .flex { display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; }\n");
+            writer.write(
+                    "  .flex { display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; }\n");
             writer.write("  .divider { border-top: 1px dashed #333; margin: 12px 0; }\n");
             writer.write("</style>\n</head>\n<body>\n");
 
             writer.write("<div class='ticket'>\n");
             writer.write("  <h2 class='center bold' style='margin-bottom: 5px;'>" + nombreIglesia + "</h2>\n");
-            writer.write("  <p class='center' style='margin-top: 0; font-size: 12px;'>RUC: 00000000000<br>" + direccionIglesia + "</p>\n");
+            writer.write("  <p class='center' style='margin-top: 0; font-size: 12px;'>RUC: 00000000000<br>"
+                    + direccionIglesia + "</p>\n");
             writer.write("  <div class='divider'></div>\n");
 
             writer.write("  <p class='bold center' style='margin: 10px 0;'>COMPROBANTE DE APORTE</p>\n");
-            writer.write("  <div class='flex'><span>Nro. Operacion:</span> <span class='bold'>" + codigoDeposito + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Nro. Operacion:</span> <span class='bold'>" + codigoDeposito
+                    + "</span></div>\n");
             writer.write("  <div class='flex'><span>Fecha:</span> <span>" + fecha + "</span></div>\n");
             writer.write("  <div class='flex'><span>DNI:</span> <span>" + dniAportante + "</span></div>\n");
-            writer.write("  <div class='flex'><span>Aportante:</span> <span class='bold'>" + nombrePersona + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Aportante:</span> <span class='bold'>" + nombrePersona
+                    + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
 
             writer.write("  <p class='bold' style='font-size: 14px; margin: 5px 0;'>DETALLE</p>\n");
-            writer.write("  <div class='flex'><span>Diezmo</span> <span>S/. " + String.format("%.2f", diezmo) + "</span></div>\n");
-            writer.write("  <div class='flex'><span>Ofrenda Sistematica</span> <span>S/. " + String.format("%.2f", ofrendaSistem) + "</span></div>\n");
-            writer.write("  <div class='flex'><span>Proyecto Local</span> <span>S/. " + String.format("%.2f", proyectoLocal) + "</span></div>\n");
-            writer.write("  <div class='flex'><span>Pagos a Instituciones</span> <span>S/. " + String.format("%.2f", pagoInstitucion) + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Diezmo</span> <span>S/. " + String.format("%.2f", diezmo)
+                    + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Ofrenda Sistematica</span> <span>S/. "
+                    + String.format("%.2f", ofrendaSistem) + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Proyecto Local</span> <span>S/. "
+                    + String.format("%.2f", proyectoLocal) + "</span></div>\n");
+            writer.write("  <div class='flex'><span>Pagos a Instituciones</span> <span>S/. "
+                    + String.format("%.2f", pagoInstitucion) + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
 
-            writer.write("  <div class='flex bold' style='font-size: 15px;'><span>TOTAL GENERAL:</span> <span>S/. " + String.format("%.2f", totalCalculado) + "</span></div>\n");
+            writer.write("  <div class='flex bold' style='font-size: 15px;'><span>TOTAL GENERAL:</span> <span>S/. "
+                    + String.format("%.2f", totalCalculado) + "</span></div>\n");
             writer.write("  <div class='divider'></div>\n");
 
-            writer.write("  <p class='center bold' style='margin-top: 15px; font-size: 12px;'>Que Dios bendiga su generosidad!</p>\n");
+            writer.write(
+                    "  <p class='center bold' style='margin-top: 15px; font-size: 12px;'>Que Dios bendiga su generosidad!</p>\n");
             writer.write("</div>\n");
 
             writer.write("</body>\n</html>");
@@ -112,10 +114,6 @@ public class Recibo {
         }
     }
 
-    /**
-     * Lanza el navegador web predeterminado del sistema operativo apuntando al
-     * archivo generado.
-     */
     public void abrir() {
         if (archivoHtml == null || !archivoHtml.exists()) {
             System.err.println("Error: El archivo del recibo no existe.");

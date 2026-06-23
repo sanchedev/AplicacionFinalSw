@@ -1,14 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package utils;
 
 import java.util.Scanner;
 
 /**
  *
- * @author alum.l4
+ * @author sanchedev
  */
 public class Lector {
 
@@ -64,7 +60,7 @@ public class Lector {
         } while (true);
     }
 
-    public static double preguntarDouble(String pregunta, double porDefecto) {
+    public static double preguntarDecimal(String pregunta, double porDefecto) {
         String respuesta;
         do {
             respuesta = preguntar(pregunta, Double.toString(porDefecto));
@@ -73,50 +69,6 @@ public class Lector {
             } catch (NumberFormatException e) {
                 Errores.personalizado("`" + respuesta + "` no es un numero valido...");
             }
-        } while (true);
-    }
-
-    public static double preguntarDoublePositivo(String pregunta) {
-        double valor;
-        do {
-            valor = preguntarDecimal(pregunta);
-            if (valor > 0) {
-                return valor;
-            }
-            Errores.personalizado("El monto debe ser mayor a 0");
-        } while (true);
-    }
-
-    public static double preguntarDoublePositivo(String pregunta, double porDefecto) {
-        double valor;
-        do {
-            valor = preguntarDouble(pregunta, porDefecto);
-            if (valor > 0) {
-                return valor;
-            }
-            Errores.personalizado("El monto debe ser mayor a 0");
-        } while (true);
-    }
-
-    public static String preguntarValidado(String pregunta, String patron, String mensajeError) {
-        String respuesta;
-        do {
-            respuesta = preguntar(pregunta);
-            if (respuesta.matches(patron)) {
-                return respuesta;
-            }
-            Errores.personalizado(mensajeError);
-        } while (true);
-    }
-
-    public static String preguntarValidado(String pregunta, String patron, String mensajeError, String porDefecto) {
-        String respuesta;
-        do {
-            respuesta = preguntar(pregunta, porDefecto);
-            if (respuesta.matches(patron)) {
-                return respuesta;
-            }
-            Errores.personalizado(mensajeError);
         } while (true);
     }
 
