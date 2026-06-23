@@ -37,19 +37,23 @@ public class IndexMiembros {
         Archivo archivo = genArchivo();
         archivo.leer();
         for (int i = 0; i < archivo.verCantidadDatos(); i++) {
-            String dni = archivo.verDato(archivo.verCabecera(0), i);
-            String nombre = archivo.verDato(archivo.verCabecera(1), i);
-            int codigoIgls = Integer.parseInt(archivo.verDato(archivo.verCabecera(2), i));
-            if (!Validaciones.esDNIValido(dni)) {
+            try {
+                String dni = archivo.verDato(archivo.verCabecera(0), i);
+                String nombre = archivo.verDato(archivo.verCabecera(1), i);
+                int codigoIgls = Integer.parseInt(archivo.verDato(archivo.verCabecera(2), i));
+                if (!Validaciones.esDNIValido(dni)) {
+                    continue;
+                }
+                if (codigoIgls != -1 && IndexIglesias.buscarPorCodigo(codigoIgls) == -1) {
+                    continue;
+                }
+                dnis[cantidad] = dni;
+                nombresCompletos[cantidad] = nombre;
+                codigoIglesias[cantidad] = codigoIgls;
+                cantidad++;
+            } catch (NumberFormatException e) {
                 continue;
             }
-            if (codigoIgls != -1 && IndexIglesias.buscarPorCodigo(codigoIgls) == -1) {
-                continue;
-            }
-            dnis[cantidad] = dni;
-            nombresCompletos[cantidad] = nombre;
-            codigoIglesias[cantidad] = codigoIgls;
-            cantidad++;
         }
         guardarMiembros();
     }
@@ -86,6 +90,7 @@ public class IndexMiembros {
         String dni = Lector.preguntar("DNI");
         if (!Validaciones.esDNIValido(dni)) {
             Errores.personalizado("\"" + dni + "\" no es un DNI valido");
+            return;
         }
         if (buscarPorDNI(dni) != -1) {
             Errores.personalizado("El DNI ya se encuentra registrado");
@@ -115,7 +120,7 @@ public class IndexMiembros {
             Errores.personalizado("El Miembro con ese DNI no existe");
             return;
         }
-        if (Lector.confirmar("Desea eliminar el miembro " + nombresCompletos[indice] + "?")) {
+        if (!Lector.confirmar("Desea eliminar el miembro " + nombresCompletos[indice] + "?")) {
             return;
         }
         cantidad--;

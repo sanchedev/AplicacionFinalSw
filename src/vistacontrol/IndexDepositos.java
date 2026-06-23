@@ -59,23 +59,27 @@ public class IndexDepositos {
         Archivo archivo = genArchivo();
         archivo.leer();
         for (int i = 0; i < archivo.verCantidadDatos(); i++) {
-            String dni = archivo.verDato(archivo.verCabecera(1), i);
-            int codigoIgls = Integer.parseInt(archivo.verDato(archivo.verCabecera(3), i));
-            if (IndexMiembros.buscarPorDNI(dni) == -1) {
+            try {
+                String dni = archivo.verDato(archivo.verCabecera(1), i);
+                int codigoIgls = Integer.parseInt(archivo.verDato(archivo.verCabecera(3), i));
+                if (IndexMiembros.buscarPorDNI(dni) == -1) {
+                    continue;
+                }
+                if (IndexIglesias.buscarPorCodigo(codigoIgls) == -1) {
+                    continue;
+                }
+                codigos[cantidad] = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
+                dnis[cantidad] = dni;
+                fechas[cantidad] = archivo.verDato(archivo.verCabecera(2), i);
+                codigoIglesias[cantidad] = codigoIgls;
+                diezmos[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(4), i));
+                ofrendasSistemicas[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(5), i));
+                ofrendasProyectoLocal[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(6), i));
+                ofrendasInstituciones[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(7), i));
+                cantidad++;
+            } catch (NumberFormatException e) {
                 continue;
             }
-            if (IndexIglesias.buscarPorCodigo(codigoIgls) == -1) {
-                continue;
-            }
-            codigos[cantidad] = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
-            dnis[cantidad] = dni;
-            fechas[cantidad] = archivo.verDato(archivo.verCabecera(2), i);
-            codigoIglesias[cantidad] = codigoIgls;
-            diezmos[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(4), i));
-            ofrendasSistemicas[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(5), i));
-            ofrendasProyectoLocal[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(6), i));
-            ofrendasInstituciones[cantidad] = Double.parseDouble(archivo.verDato(archivo.verCabecera(7), i));
-            cantidad++;
         }
         guardarDepositos();
     }

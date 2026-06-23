@@ -40,15 +40,19 @@ public class IndexIglesias {
         Archivo archivo = genArchivo();
         archivo.leer();
         for (int i = 0; i < archivo.verCantidadDatos(); i++) {
-            int codigo = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
-            String nombre = archivo.verDato(archivo.verCabecera(1), i);
-            String direccion = archivo.verDato(archivo.verCabecera(2), i);
-            int aforo = Integer.parseInt(archivo.verDato(archivo.verCabecera(3), i));
-            codigos[cantidad] = codigo;
-            nombres[cantidad] = nombre;
-            direcciones[cantidad] = direccion;
-            aforos[cantidad] = aforo;
-            cantidad++;
+            try {
+                int codigo = Integer.parseInt(archivo.verDato(archivo.verCabecera(0), i));
+                String nombre = archivo.verDato(archivo.verCabecera(1), i);
+                String direccion = archivo.verDato(archivo.verCabecera(2), i);
+                int aforo = Integer.parseInt(archivo.verDato(archivo.verCabecera(3), i));
+                codigos[cantidad] = codigo;
+                nombres[cantidad] = nombre;
+                direcciones[cantidad] = direccion;
+                aforos[cantidad] = aforo;
+                cantidad++;
+            } catch (NumberFormatException e) {
+                continue;
+            }
         }
         guardarIglesias();
     }
@@ -105,6 +109,7 @@ public class IndexIglesias {
         direcciones[cantidad] = Lector.preguntar("Direccion");
         aforos[cantidad] = Lector.preguntarEntero("Aforo");
         cantidad++;
+        guardarIglesias();
         System.out.println("Iglesia registrado exitosamente!");
     }
 
@@ -116,7 +121,6 @@ public class IndexIglesias {
             Errores.personalizado("El codigo no esta registrado");
             return;
         }
-        System.out.println("Iglesia eliminada exitosamente!");
         cantidad--;
         for (int i = indice; i < cantidad; i++) {
             codigos[i] = codigos[i + 1];
@@ -124,12 +128,13 @@ public class IndexIglesias {
             direcciones[i] = direcciones[i + 1];
             aforos[i] = aforos[i + 1];
         }
+        guardarIglesias();
         System.out.println("Iglesia eliminada correctamente");
     }
 
     private static void editar() {
         System.out.println("*** Editar Iglesia ***");
-        int codigo = Lector.preguntarEntero("Codigo de Iglesia a eliminar");
+        int codigo = Lector.preguntarEntero("Codigo de Iglesia a editar");
         int indice = buscarPorCodigo(codigo);
         if (indice == -1) {
             Errores.personalizado("El codigo no esta registrado");
@@ -138,6 +143,7 @@ public class IndexIglesias {
         nombres[indice] = Lector.preguntar("Nombre de la Iglesia", nombres[indice]);
         direcciones[indice] = Lector.preguntar("Direccion", direcciones[indice]);
         aforos[indice] = Lector.preguntarEntero("Aforo", aforos[indice]);
+        guardarIglesias();
         System.out.println("Iglesia editada exitosamente!");
     }
 
